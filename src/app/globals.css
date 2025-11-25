@@ -1,26 +1,63 @@
 @import "tailwindcss";
+@config "../../tailwind.config.js";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #1A1A1D;
+  --foreground: #FAFAFA;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), sans-serif;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-left: 1px solid rgba(251, 191, 36, 0.1); /* subtle amber line */
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, 
+    rgba(251, 191, 36, 0.6),   /* amber-400 */
+    rgba(251, 146, 60, 0.8)    /* orange-400 */
+  );
+  border: 2px solid #000;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, 
+    #fbbf24,   /* amber-400 solid */
+    #f5923c    /* brighter orange */
+  );
+
+}
+
+/* Corner (when both scrollbars meet) */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #f59e0b;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #d97706;
 }

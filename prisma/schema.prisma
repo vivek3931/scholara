@@ -1,0 +1,117 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ResourceStatus {
+  PUBLIC
+  PRIVATE
+  REMOVED
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String    @unique
+  otp           String?
+  otpExpires    DateTime?
+  coins         Int       @default(80)
+  role          Role      @default(USER)
+  isBlocked     Boolean   @default(false)
+  reportCount   Int       @default(0)
+  referralCode  String    @unique @default(cuid())
+  referredBy    String?
+  
+  uploads       Resource[] @relation("UserUploads")
+  downloads     Resource[] @relation("UserDownloads", fields: [downloadIds], references: [id])
+  downloadIds   String[]   @db.ObjectId
+  
+  savedResources Resource[] @relation("SavedResources", fields: [savedResourceIds], references: [id])
+  savedResourceIds String[] @db.ObjectId
+  
+  comments      Comment[]
+  reports       Report[]   @relation("Reporter")
+  receivedReports Report[] @relation("ReportedUser")
+  transactions  Transaction[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Resource {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String
+  subject        String
+  fileUrl        String
+  previewUrl     String?
+  
+  // NEW: Hash fields for duplicate detection
+  fileHash       String?                 // SHA256 hash (removed @unique to allow multiple nulls)
+  tlshHash       String?                 // TLSH fingerprint
+  fileSize       Int?                    // File size in bytes
+  
+  authorId       String         @db.ObjectId
+  author         User           @relation("UserUploads", fields: [authorId], references: [id])
+  
+  downloadsCount Int            @default(0)
+  viewsCount     Int            @default(0)
+  status         ResourceStatus @default(PUBLIC)
+  
+  downloadedBy   User[]         @relation("UserDownloads", fields: [downloadedByIds], references: [id])
+  downloadedByIds String[]      @db.ObjectId
+  
+  savedBy        User[]         @relation("SavedResources", fields: [savedByIds], references: [id])
+  savedByIds     String[]       @db.ObjectId
+
+  comments       Comment[]
+  reports        Report[]
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([fileHash])   // Regular index instead of unique
+  @@index([tlshHash])
+}
+
+model Comment {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
+  userId     String   @db.ObjectId
+  user       User     @relation(fields: [userId], references: [id])
+  resourceId String   @db.ObjectId
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Report {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  reason       String
+  reporterId   String   @db.ObjectId
+  reporter     User     @relation("Reporter", fields: [reporterId], references: [id])
+  
+  targetUserId String?  @db.ObjectId
+  targetUser   User?    @relation("ReportedUser", fields: [targetUserId], references: [id])
+  
+  resourceId   String?  @db.ObjectId
+  resource     Resource? @relation(fields: [resourceId], references: [id])
+  
+  createdAt    DateTime @default(now())
+}
+
+model Transaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Int
+  type      String
+  createdAt DateTime @default(now())
+}

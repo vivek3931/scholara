@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 100">
+  <!-- Gradient Definitions -->
+  <defs>
+    <!-- Main text gradient (orange to yellow to orange) -->
+    <linearGradient id="scholaraGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#eab308;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Badge gradient (orange to yellow to orange) -->
+    <linearGradient id="badgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#eab308;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Subtle shadow filter -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="2" result="offset"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background (transparent) -->
+  <rect width="500" height="100" fill="transparent"/>
+  
+  <!-- Main Logo Text (Adjusted Y-position for better vertical centering) -->
+  <g transform="translate(50, 45)">
+    <!-- Changed font-family to 'Poppins' for a beautiful look -->
+    <text font-family="Poppins, sans-serif" font-size="42" font-weight="800" fill="url(#scholaraGradient)" dominant-baseline="middle">Scholara</text>
+  </g>
+  
+  <!-- Collective Badge (Positioned above the 'a' in Scholara, Y-position kept relative) -->
+  <g transform="translate(240, 8)" filter="url(#softShadow)">
+    <!-- Main badge background -->
+    <rect x="0" y="0" width="100" height="24" rx="12" fill="url(#badgeGradient)"/>
+    
+    <!-- Subtle inner highlight -->
+    <rect x="1" y="1" width="98" height="11" rx="11" fill="rgba(255,255,255,0.2)"/>
+    
+    <!-- Academic laurel icon - Removed star and laurel branches as requested -->
+    <!-- <g transform="translate(8, 6)">
+      <path d="M0 6 Q2 4 4 6 Q6 8 8 6" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" fill="none"/>
+      <path d="M8 6 Q10 4 12 6 Q14 8 16 6" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" fill="none"/>
+      <polygon points="8,2 9,5 12,5 10,7 11,10 8,8 5,10 6,7 4,5 7,5" fill="rgba(255,255,255,0.8)" stroke="none"/>
+    </g> -->
+    
+    <!-- Badge text - Changed font-family to 'Poppins' for consistency -->
+    <text x="50" y="12" font-family="Poppins, sans-serif" font-size="9" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="central">COLLECTIVE</text>
+    
+    <!-- Decorative dots -->
+    <circle cx="85" cy="6" r="1" fill="rgba(255,255,255,0.6)"/>
+    <circle cx="88" cy="9" r="0.8" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="91" cy="12" r="0.6" fill="rgba(255,255,255,0.3)"/>
+  </g>
+  
+  <!-- Tagline (Adjusted Y-position to align with main text's new position) -->
+  <g transform="translate(50, 70)">
+    <!-- Tagline font remains Georgia, serif as it complements the main logo -->
+    <text font-family="Georgia, serif" font-size="14" fill="#6b7280" font-style="italic">Excellence in Academic Innovation</text>
+  </g>
+</svg>
