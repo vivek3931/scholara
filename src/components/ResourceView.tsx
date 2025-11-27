@@ -18,7 +18,7 @@ export default function ResourceView({ resource }: { resource: any }) {
     }, []);
 
     return (
-        <div className="container mx-auto py-10 px-4 relative">
+        <div className="container bg-gradient-to-br from-onyx via-charcoal to-onyx  mx-auto py-10 px-4 relative">
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Notification">
                 <p>{modalMessage}</p>
             </Modal>
@@ -49,7 +49,7 @@ export default function ResourceView({ resource }: { resource: any }) {
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-6">
+                <div className="space-y-6 ">
                     <AnimatePresence mode="wait" initial={false}>
                         {!fullscreen && (
                             <motion.div

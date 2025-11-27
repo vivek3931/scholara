@@ -107,7 +107,7 @@ export default function Features() {
                 >
                     {features.map((feature, idx) => (
                         <motion.div key={idx} variants={item}>
-                            <Card className="h-full bg-charcoal/30 border-white/5 hover:bg-charcoal/50 hover:border-white/10 transition-all duration-300 group backdrop-blur-sm">
+                            <Card className="h-full bg-onyx border-white/5 hover:border-white/10 transition-all duration-300 group">
                                 <CardContent className="p-8 space-y-4">
                                     <div className={`w-14 h-14 rounded-2xl ${feature.bg} ${feature.border} border flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                                         <feature.icon className={`w-7 h-7 ${feature.color}`} />

@@ -97,7 +97,7 @@ module.exports = {
             // Enhanced box shadows for both light and dark modes
             boxShadow: {
                 // Existing glow effects (perfect for dark mode)
-                'glow-sm': '0 0 8px rgba(251, 191, 36, 0.4), 0 0 12px rgba(245, 158, 11, 0.3)',
+                'glow-sm': '0 4px 6px -1px #f59e0b1a, 0 2px 4px -1px #f59e0b0f',
                 'glow-md': '0 0 15px rgba(251, 191, 36, 0.5), 0 0 25px rgba(245, 158, 11, 0.4), 0 0 40px rgba(234, 88, 12, 0.3)',
 
                 // Light mode shadows - elegant and modern

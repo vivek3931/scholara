@@ -30,6 +30,9 @@ model User {
   referralCode  String    @unique @default(cuid())
   referredBy    String?
   
+  username      String?   @unique
+  password      String?
+
   uploads       Resource[] @relation("UserUploads")
   downloads     Resource[] @relation("UserDownloads", fields: [downloadIds], references: [id])
   downloadIds   String[]   @db.ObjectId
@@ -58,6 +61,7 @@ model Resource {
   fileHash       String?                 // SHA256 hash (removed @unique to allow multiple nulls)
   tlshHash       String?                 // TLSH fingerprint
   fileSize       Int?                    // File size in bytes
+  pageCount      Int?                    // Number of pages in the PDF
   
   authorId       String         @db.ObjectId
   author         User           @relation("UserUploads", fields: [authorId], references: [id])
@@ -114,4 +118,27 @@ model Transaction {
   amount    Int
   type      String
   createdAt DateTime @default(now())
+}
+
+model ChatbotDocument {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  filename   String
+  subject    String
+  tags       String[]
+  chunkCount Int
+  wordCount  Int
+  fileSize   Int
+  uploadedAt DateTime @default(now())
+  userId     String?  @db.ObjectId
+}
+
+model ChatbotConversation {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String?  @db.ObjectId
+  question   String
+  answer     String
+  confidence Float
+  usedWeb    Boolean  @default(false)
+  sources    String[]
+  createdAt  DateTime @default(now())
 }

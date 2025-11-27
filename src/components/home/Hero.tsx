@@ -21,8 +21,8 @@ export default function Hero() {
                 type === 0
                     ? Math.random() * 2 + 2
                     : type === 1
-                    ? Math.random() * 4 + 3
-                    : Math.random() * 6 + 4;
+                        ? Math.random() * 4 + 3
+                        : Math.random() * 6 + 4;
 
             const isRectangle = type === 2 && Math.random() > 0.5;
             const borderRadius = isRectangle ? '10%' : '50%';
@@ -223,15 +223,15 @@ export default function Hero() {
                     particleType === 0
                         ? (Math.random() * 2 + 2) * baseSize
                         : particleType === 1
-                        ? (Math.random() * 4 + 3) * baseSize
-                        : (Math.random() * 6 + 4) * baseSize;
+                            ? (Math.random() * 4 + 3) * baseSize
+                            : (Math.random() * 6 + 4) * baseSize;
 
                 const opacity =
                     particleType === 0
                         ? Math.random() * 0.3 + 0.3
                         : particleType === 1
-                        ? Math.random() * 0.4 + 0.4
-                        : Math.random() * 0.4 + 0.6;
+                            ? Math.random() * 0.4 + 0.4
+                            : Math.random() * 0.4 + 0.6;
 
                 const baseAngle = (index / activeParticles) * Math.PI * 2;
                 const angle = baseAngle + (Math.random() - 0.5);
@@ -250,8 +250,8 @@ export default function Hero() {
                         particleType === 0
                             ? Math.random() * 2 + 3
                             : particleType === 1
-                            ? Math.random() * 3 + 5
-                            : Math.random() * 3 + 7,
+                                ? Math.random() * 3 + 5
+                                : Math.random() * 3 + 7,
                     size,
                     opacity,
                     delay: index * (particleType === 0 ? 0.1 : particleType === 1 ? 0.15 : 0.2),
@@ -400,21 +400,18 @@ export default function Hero() {
                     className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg sm:max-w-none mx-auto"
                 >
                     <Link href="/upload">
-                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-bold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:from-orange-600 hover:to-yellow-600 text-sm sm:text-base shadow-lg hover:shadow-xl">
+                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-bold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-gradient-to-r from-amber-400 to-amber-500 text-onyx hover:from-amber-500 hover:to-amber-600 text-sm sm:text-base shadow-lg hover:shadow-xl">
                             <CloudUpload className="w-5 h-5" />
                             <span>Upload Resources</span>
                         </Button>
                     </Link>
                     <Link href="/browse">
-                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-transparent text-orange-400 border-2 border-orange-500 hover:bg-orange-500 hover:text-white text-sm sm:text-base">
+                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-transparent text-amber-500 border-2 border-amber-500 hover:bg-amber-500 hover:text-onyx text-sm sm:text-base">
                             <Search className="w-5 h-5" />
                             <span>Explore Materials</span>
                         </Button>
                     </Link>
                 </motion.div>
-
-                {/* Stats */}
-                
             </div>
         </section>
     );

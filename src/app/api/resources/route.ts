@@ -77,6 +77,12 @@ export async function POST(req: Request) {
     // ========== STORE HASHES ==========
     await storeFileHashes(resource.id, fileUrl);
 
+    // ========== TRIGGER AI INGESTION (BACKGROUND) ==========
+    // We don't await this to keep the response fast
+    import('@/lib/ai/processor').then(({ documentProcessor }) => {
+      documentProcessor.ingest(resource);
+    });
+
     // ========== AWARD COINS ==========
     await prisma.user.update({
       where: { id: session.userId },

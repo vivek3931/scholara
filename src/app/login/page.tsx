@@ -67,7 +67,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-onyx p-4">
+        <div className="flex  min-h-screen items-center justify-center bg-gradient-to-b bg-gradient-to-br from-onyx via-charcoal to-onyx p-4">
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Notification">
                 <p>{modalMessage}</p>
             </Modal>
@@ -76,7 +76,7 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <Card className="w-[350px] border-amber-500/20 bg-onyx/50 backdrop-blur-sm">
+                <Card className="w-[350px]  bg-onyx/60 ">
                     <CardHeader>
                         <CardTitle className="text-amber-500">Scholara Collective</CardTitle>
                         <CardDescription>Academic Resource Hub</CardDescription>

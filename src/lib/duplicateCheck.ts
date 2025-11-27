@@ -50,7 +50,7 @@ export async function checkDuplicate(
     // ========== LAYER 2: Fuzzy Hash Check (Smart Similarity) ==========
     if (fuzzyHash) {
       console.log('🔎 Checking Fuzzy hash similarity...');
-      
+
       const allResources = await prisma.resource.findMany({
         where: {
           tlshHash: { not: null },
@@ -105,7 +105,7 @@ export async function storeFileHashes(
   fileUrl: string
 ): Promise<void> {
   try {
-    const { sha256, fuzzyHash, fileSize } = await calculateFileHashes(fileUrl);
+    const { sha256, fuzzyHash, fileSize, pageCount } = await calculateFileHashes(fileUrl);
 
     await prisma.resource.update({
       where: { id: resourceId },
@@ -113,10 +113,11 @@ export async function storeFileHashes(
         fileHash: sha256,
         tlshHash: fuzzyHash,
         fileSize,
+        pageCount,
       },
     });
 
-    console.log('✓ File hashes stored in database');
+    console.log('✓ File hashes and page count stored in database');
   } catch (error) {
     console.error('Error storing file hashes:', error);
     // Don't fail the upload if hash storage fails

@@ -20,23 +20,28 @@ body {
 
 ::-webkit-scrollbar-track {
   background: transparent;
-  border-left: 1px solid rgba(251, 191, 36, 0.1); /* subtle amber line */
+  border-left: 1px solid rgba(251, 191, 36, 0.1);
+  /* subtle amber line */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, 
-    rgba(251, 191, 36, 0.6),   /* amber-400 */
-    rgba(251, 146, 60, 0.8)    /* orange-400 */
-  );
+  background: linear-gradient(to bottom,
+      rgba(251, 191, 36, 0.6),
+      /* amber-400 */
+      rgba(251, 146, 60, 0.8)
+      /* orange-400 */
+    );
   border: 2px solid #000;
   border-radius: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, 
-    #fbbf24,   /* amber-400 solid */
-    #f5923c    /* brighter orange */
-  );
+  background: linear-gradient(to bottom,
+      #fbbf24,
+      /* amber-400 solid */
+      #f5923c
+      /* brighter orange */
+    );
 
 }
 
@@ -46,18 +51,29 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #f59e0b;
-    border-radius: 4px;
+  background: #f59e0b;
+  border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #d97706;
+  background: #d97706;
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }

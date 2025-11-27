@@ -1,7 +1,14 @@
 import { prisma } from '@/lib/db';
 import ResourceView from '@/components/ResourceView';
+import { getSession } from '@/lib/auth';
+import LoginRequired from '@/components/LoginRequired';
 
 export default async function ResourcePage({ params }: { params: Promise<{ id: string }> }) {
+    const session = await getSession();
+    if (!session) {
+        return <LoginRequired />;
+    }
+
     const { id } = await params;
     const resource = await prisma.resource.findUnique({
         where: { id },

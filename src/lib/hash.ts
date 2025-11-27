@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { PDFDocument } from 'pdf-lib';
 
 /**
  * Generate SHA256 hash from file buffer
@@ -24,7 +25,7 @@ export function generateFuzzyHash(buffer: Buffer): string {
     // and hashing each chunk
     const chunkSize = 4096; // 4KB chunks
     const chunks: string[] = [];
-    
+
     for (let i = 0; i < buffer.length; i += chunkSize) {
       const chunk = buffer.slice(i, i + chunkSize);
       const chunkHash = crypto
@@ -34,7 +35,7 @@ export function generateFuzzyHash(buffer: Buffer): string {
         .substring(0, 8);
       chunks.push(chunkHash);
     }
-    
+
     return chunks.join(':');
   } catch (error) {
     console.error('Error generating fuzzy hash:', error);
@@ -49,24 +50,24 @@ export function generateFuzzyHash(buffer: Buffer): string {
 export function compareFuzzyHash(hash1: string, hash2: string): number {
   try {
     if (!hash1 || !hash2) return 0;
-    
+
     const chunks1 = hash1.split(':');
     const chunks2 = hash2.split(':');
-    
+
     // If very different sizes, probably different files
     const sizeDiff = Math.abs(chunks1.length - chunks2.length);
     if (sizeDiff > chunks1.length * 0.3) return 0; // More than 30% different = likely different
-    
+
     // Count matching chunks
     let matches = 0;
     const minLength = Math.min(chunks1.length, chunks2.length);
-    
+
     for (let i = 0; i < minLength; i++) {
       if (chunks1[i] === chunks2[i]) {
         matches++;
       }
     }
-    
+
     // Calculate similarity as percentage
     const similarity = Math.round((matches / minLength) * 100);
     return Math.max(0, Math.min(100, similarity));
@@ -78,21 +79,23 @@ export function compareFuzzyHash(hash1: string, hash2: string): number {
 
 /**
  * Calculate file hashes from Cloudinary URL
- * Downloads the file and generates SHA256 + Fuzzy Hash
+ * Downloads the file and generates SHA256 + Fuzzy Hash + Page Count
  */
 export async function calculateFileHashes(fileUrl: string): Promise<{
   sha256: string;
   fuzzyHash: string;
   fileSize: number;
+  pageCount?: number;
 }> {
   try {
     console.log('📥 Downloading file from Cloudinary...');
-    
+
     // Download file from Cloudinary
-    const response = await fetch(fileUrl, { 
+    const response = await fetch(fileUrl, {
+      // @ts-ignore
       timeout: 30000 // 30 second timeout
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch file: ${response.statusText}`);
     }
@@ -110,10 +113,23 @@ export async function calculateFileHashes(fileUrl: string): Promise<{
     const fuzzyHash = generateFuzzyHash(bufferNode);
     console.log(`✓ Fuzzy hash generated`);
 
+    // Count Pages (if PDF)
+    let pageCount: number | undefined;
+    if (fileUrl.toLowerCase().endsWith('.pdf')) {
+      try {
+        const pdfDoc = await PDFDocument.load(bufferNode);
+        pageCount = pdfDoc.getPageCount();
+        console.log(`✓ PDF Page Count: ${pageCount}`);
+      } catch (pdfError) {
+        console.warn('Failed to count PDF pages:', pdfError);
+      }
+    }
+
     return {
       sha256,
       fuzzyHash,
       fileSize: bufferNode.length,
+      pageCount
     };
   } catch (error) {
     console.error('❌ Error calculating file hashes:', error);

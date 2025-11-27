@@ -55,7 +55,7 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <AnimatePresence mode="popLayout">
                 {resources.map((resource, index) => (
                     <motion.div
@@ -68,9 +68,9 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
                             duration: 0.3,
                             delay: index * 0.05,
                             layout: { duration: 0.3 }
-                        }}
+                        }} 
                     >
-                        <Card className="bg-charcoal border-white/10 hover:border-amber-500/30 transition-all duration-300 h-full flex flex-col group">
+                        <Card className="bg-onyx/60 border-white/10 hover:border-amber-500/30 transition-all duration-300 h-full flex flex-col group">
                             <CardContent className="p-6 flex flex-col h-full">
                                 <div className="flex-1">
                                     <Link href={`/resource/${resource.id}`}>
@@ -110,7 +110,7 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
 
                                 <div className="flex gap-2 mt-auto">
                                     <Link href={`/resource/${resource.id}`} className="flex-1">
-                                        <Button className="w-full text-xs bg-amber-600 hover:bg-amber-700">
+                                        <Button className="w-full text-xs ">
                                             View Resource
                                         </Button>
                                     </Link>
