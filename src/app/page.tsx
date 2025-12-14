@@ -1,14 +1,16 @@
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import Hero from '@/components/home/Hero';
-import Features from '@/components/home/Features';
-import StatsSection from '@/components/home/Stats';
-import CTA from '@/components/home/CTA';
-import SubjectsSection from '@/components/home/SubjectsSection';
+import dynamic from 'next/dynamic';
+
+const Features = dynamic(() => import('@/components/home/Features'));
+const StatsSection = dynamic(() => import('@/components/home/Stats'));
+const CTA = dynamic(() => import('@/components/home/CTA'));
+const SubjectsSection = dynamic(() => import('@/components/home/SubjectsSection'));
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-onyx text-pearl font-inter selection:bg-amber-500/30">
+    <main className="min-h-screen bg-background text-foreground font-inter selection:bg-primary/30">
       <Hero />
       <Features />
       <SubjectsSection />

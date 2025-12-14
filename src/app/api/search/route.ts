@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {prisma} from '@/lib/db'
+import { prisma } from '@/lib/db'
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
+        const { searchParams } = new URL(req.url, 'http://localhost');
         const query = searchParams.get('q');
 
         if (!query || query.trim().length === 0) {
@@ -39,9 +41,8 @@ export async function GET(req: NextRequest) {
                 title: true,
                 description: true,
                 subject: true,
-                type: true,
-                uploadedAt: true,
-                uploader: {
+                createdAt: true,
+                author: {
                     select: {
                         email: true,
                     },
@@ -49,7 +50,7 @@ export async function GET(req: NextRequest) {
             },
             take: 8, // Limit to 8 suggestions
             orderBy: {
-                uploadedAt: 'desc',
+                createdAt: 'desc',
             },
         });
 

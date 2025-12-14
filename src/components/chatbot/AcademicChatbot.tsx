@@ -75,8 +75,8 @@ export default function AcademicChatbot() {
         // Use a more intense dark background for the main chat area
         const isUser = msg.role === 'user';
         const bubbleClasses = isUser
-            ? 'bg-amber-500/15 border border-amber-500/20 text-white'
-            : 'bg-gray-800/70 border border-gray-700/50 text-gray-200';
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted border border-border text-foreground';
 
         return (
             <motion.div
@@ -93,9 +93,9 @@ export default function AcademicChatbot() {
                     {/* Footer/Context Section for Assistant */}
                     {msg.role === 'assistant' && (msg.sources?.length || msg.usedWeb) && (
                         <div className="mt-3 pt-3 border-t border-gray-700/40 text-xs">
-                            <div className="flex justify-between items-center text-gray-400 mb-1">
+                            <div className="flex justify-between items-center text-muted-foreground mb-1">
                                 {msg.usedWeb && (
-                                    <span className="flex items-center gap-1 text-blue-400">
+                                    <span className="flex items-center gap-1 text-primary">
                                         <Globe size={12} /> Web
                                     </span>
                                 )}
@@ -106,12 +106,12 @@ export default function AcademicChatbot() {
                                     <span className="font-medium text-gray-400 block mb-1">Sources Used:</span>
                                     <div className="flex flex-wrap gap-2">
                                         {msg.sources.slice(0, 3).map((source, idx) => (
-                                            <span key={idx} className="flex items-center gap-1 bg-gray-700/50 text-amber-300 px-2 py-1 rounded-full text-[10px]">
+                                            <span key={idx} className="flex items-center gap-1 bg-muted/50 text-primary px-2 py-1 rounded-full text-[10px] border border-border">
                                                 <FileText size={10} /> {source.split('/').pop()}
                                             </span>
                                         ))}
                                         {msg.sources.length > 3 && (
-                                            <span className="text-gray-500 text-[10px] px-2 py-1">
+                                            <span className="text-muted-foreground text-[10px] px-2 py-1">
                                                 +{msg.sources.length - 3} more
                                             </span>
                                         )}
@@ -126,23 +126,23 @@ export default function AcademicChatbot() {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-[#0A0A0A] text-white">
+        <div className="flex flex-col h-screen bg-background text-foreground">
 
             {/* Header */}
-            <div className="bg-black/40 backdrop-blur-md border-b border-amber-500/20 px-6 py-4">
+            <div className="bg-background/80 backdrop-blur-md border-b border-border px-6 py-4">
                 <div className="flex items-center justify-between max-w-5xl mx-auto">
                     <div>
-                        <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-500">
+                        <h1 className="text-2xl font-extrabold text-primary">
                             🎓 Academic RAG Chatbot
                         </h1>
-                        <p className="text-sm text-gray-400 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                             Powered by **Local AI** & **ChromaDB**
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
                         <button
                             onClick={handleClearChat}
-                            className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                            className="p-2 rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
                             title="Clear chat"
                         >
                             <Trash2 size={18} />
@@ -156,10 +156,10 @@ export default function AcademicChatbot() {
                 {messages.length === 0 && (
                     <div className="text-center py-20">
                         <div className="text-6xl mb-4">🤖</div>
-                        <h2 className="text-2xl font-bold text-amber-400 mb-2">
+                        <h2 className="text-2xl font-bold text-primary mb-2">
                             Ask me anything!
                         </h2>
-                        <p className="text-gray-400">
+                        <p className="text-muted-foreground">
                             I learn from the documents you upload to the site.
                         </p>
                     </div>
@@ -178,8 +178,8 @@ export default function AcademicChatbot() {
                         animate={{ opacity: 1 }}
                         className="flex justify-start mb-6"
                     >
-                        <div className="bg-gray-800/70 border border-gray-700/50 rounded-2xl px-5 py-4 shadow-lg">
-                            <Loader2 className="animate-spin text-amber-400" size={20} />
+                        <div className="bg-muted border border-border rounded-2xl px-5 py-4 shadow-lg">
+                            <Loader2 className="animate-spin text-primary" size={20} />
                         </div>
                     </motion.div>
                 )}
@@ -188,7 +188,7 @@ export default function AcademicChatbot() {
             </div>
 
             {/* Input Area */}
-            <div className="bg-black/40 backdrop-blur-md border-t border-amber-500/20 px-6 py-4">
+            <div className="bg-background/80 backdrop-blur-md border-t border-border px-6 py-4">
                 <div className="max-w-5xl mx-auto flex items-center gap-3">
                     {/* Message Input */}
                     <input
@@ -198,14 +198,14 @@ export default function AcademicChatbot() {
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                         placeholder="Ask a question about your documents..."
                         disabled={isLoading}
-                        className="flex-1 bg-gray-800/70 border border-gray-700/50 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-500/50 transition-colors disabled:opacity-50"
+                        className="flex-1 bg-muted border border-input rounded-xl px-4 py-3 focus:outline-none focus:border-primary/50 transition-colors disabled:opacity-50 text-foreground placeholder:text-muted-foreground"
                     />
 
                     {/* Send Button */}
                     <button
                         onClick={handleSendMessage}
                         disabled={!input.trim() || isLoading}
-                        className="p-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-amber-500/30"
+                        className="p-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary/30"
                         title="Send message"
                     >
                         <Send size={20} />

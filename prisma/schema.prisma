@@ -45,6 +45,11 @@ model User {
   receivedReports Report[] @relation("ReportedUser")
   transactions  Transaction[]
 
+  // Subscription Fields
+  isPro           Boolean   @default(false)
+  subscriptionEnd DateTime?
+  razorpayCustomerId String?
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -76,6 +81,10 @@ model Resource {
   savedBy        User[]         @relation("SavedResources", fields: [savedByIds], references: [id])
   savedByIds     String[]       @db.ObjectId
 
+  // NEW: Likes and Dislikes
+  likes          String[]       @db.ObjectId
+  dislikes       String[]       @db.ObjectId
+
   comments       Comment[]
   reports        Report[]
 
@@ -84,6 +93,9 @@ model Resource {
 
   @@index([fileHash])   // Regular index instead of unique
   @@index([tlshHash])
+  @@index([title])
+  @@index([subject])
+  @@index([createdAt])
 }
 
 model Comment {

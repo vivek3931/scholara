@@ -33,7 +33,7 @@ export default async function ResourcePage({ params }: { params: Promise<{ id: s
     };
 
     return (
-        <div className="min-h-screen bg-onyx text-white">
+        <div className="min-h-screen bg-background text-foreground">
             <ResourceView resource={serializedResource} />
         </div>
     );

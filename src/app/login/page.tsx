@@ -54,6 +54,8 @@ export default function LoginPage() {
                 body: JSON.stringify({ email, otp }),
             });
             if (res.ok) {
+                // Dispatch event to notify components (like Navbar) that user has logged in
+                window.dispatchEvent(new Event('userLoggedIn'));
                 router.push('/');
             } else {
                 showModal('Invalid OTP');
@@ -67,7 +69,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex  min-h-screen items-center justify-center bg-gradient-to-b bg-gradient-to-br from-onyx via-charcoal to-onyx p-4">
+        <div className="flex  min-h-screen items-center justify-center bg-background p-4">
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Notification">
                 <p>{modalMessage}</p>
             </Modal>
@@ -76,16 +78,16 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <Card className="w-[350px]  bg-onyx/60 ">
+                <Card className="w-[350px] bg-card border-border">
                     <CardHeader>
-                        <CardTitle className="text-amber-500">Scholara Collective</CardTitle>
+                        <CardTitle className="text-primary">Scholara Collective</CardTitle>
                         <CardDescription>Academic Resource Hub</CardDescription>
                     </CardHeader>
                     <CardContent>
                         {step === 'email' ? (
                             <form onSubmit={handleSendOtp} className="space-y-4">
                                 <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-medium text-white">Email</label>
+                                    <label htmlFor="email" className="text-sm font-medium text-foreground">Email</label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -102,7 +104,7 @@ export default function LoginPage() {
                         ) : (
                             <form onSubmit={handleVerifyOtp} className="space-y-4">
                                 <div className="space-y-2">
-                                    <label htmlFor="otp" className="text-sm font-medium text-white">Enter OTP</label>
+                                    <label htmlFor="otp" className="text-sm font-medium text-foreground">Enter OTP</label>
                                     <Input
                                         id="otp"
                                         type="text"
@@ -122,7 +124,7 @@ export default function LoginPage() {
                         )}
                     </CardContent>
                     <CardFooter className="justify-center">
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                             By continuing, you agree to our Terms of Service.
                         </p>
                     </CardFooter>

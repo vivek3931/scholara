@@ -74,25 +74,25 @@ export default function Features() {
     return (
         <section className="py-24 px-4 relative overflow-hidden">
             {/* Background Decor */}
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-            <div className="container mx-auto">
+            <div className="max-w-7xl mx-auto">
                 <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-3xl md:text-5xl font-bold font-poppins"
+                        className="text-3xl md:text-5xl font-bold font-poppins text-foreground"
                     >
-                        Why Choose <span className="text-amber-400">Scholara</span>?
+                        Why Choose <span className="text-primary">Scholara</span>?
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="text-ash text-lg"
+                        className="text-muted-foreground text-lg"
                     >
                         Everything you need to excel in your academic journey, all in one place.
                     </motion.p>
@@ -107,15 +107,15 @@ export default function Features() {
                 >
                     {features.map((feature, idx) => (
                         <motion.div key={idx} variants={item}>
-                            <Card className="h-full bg-onyx border-white/5 hover:border-white/10 transition-all duration-300 group">
+                            <Card className="h-full bg-card border-border hover:border-primary/50 transition-all duration-300 group shadow-sm hover:shadow-md">
                                 <CardContent className="p-8 space-y-4">
                                     <div className={`w-14 h-14 rounded-2xl ${feature.bg} ${feature.border} border flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                                         <feature.icon className={`w-7 h-7 ${feature.color}`} />
                                     </div>
-                                    <h3 className="text-xl font-bold text-pearl group-hover:text-white transition-colors">
+                                    <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-ash leading-relaxed">
+                                    <p className="text-muted-foreground leading-relaxed">
                                         {feature.description}
                                     </p>
                                 </CardContent>

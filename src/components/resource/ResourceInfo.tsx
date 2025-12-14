@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Download as DownloadIcon, Bookmark, BookmarkCheck, Languages } from 'lucide-react';
+import { Download as DownloadIcon, Bookmark, BookmarkCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCallback, useState, useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
@@ -12,13 +12,6 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [saved, setSaved] = useState(false);
     const [savingLoading, setSavingLoading] = useState(false);
-
-    // Translation states
-    const [translating, setTranslating] = useState(false);
-    const [showTranslateOptions, setShowTranslateOptions] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState('');
-    const [translatedPdfUrl, setTranslatedPdfUrl] = useState('');
-    const [translationProgress, setTranslationProgress] = useState('');
 
     // Check if resource is already saved
     useEffect(() => {
@@ -37,6 +30,9 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
         };
 
         checkSavedStatus();
+
+        window.addEventListener('userLoggedIn', checkSavedStatus);
+        return () => window.removeEventListener('userLoggedIn', checkSavedStatus);
     }, [resource.id]);
 
     const handleSaveToggle = useCallback(async () => {
@@ -93,72 +89,6 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
         }
     }, [resource.id, resource.fileUrl, showModal]);
 
-    // Translation handler
-    const handleTranslate = useCallback(async () => {
-        if (!selectedLanguage) {
-            showModal('Please select a language');
-            return;
-        }
-
-        setTranslating(true);
-        setTranslationProgress('Extracting text...');
-        setTranslatedPdfUrl('');
-
-        try {
-            await new Promise(r => setTimeout(r, 500));
-            setTranslationProgress('Translating to selected language...');
-
-            const res = await fetch('/api/translate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    fileUrl: resource.fileUrl,
-                    targetLanguage: selectedLanguage,
-                }),
-                credentials: 'include',
-            });
-
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Translation failed');
-            }
-
-            setTranslationProgress('Rebuilding PDF...');
-
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-
-            setTranslatedPdfUrl(url);
-            // Notify parent component about the new PDF URL
-            if (resource.onPdfUrlChange) {
-                resource.onPdfUrlChange(url);
-            }
-
-            showModal(`PDF translated successfully! The preview has been updated.`);
-            setShowTranslateOptions(false);
-
-        } catch (error: any) {
-            console.error('Translation error:', error);
-            showModal(error.message || 'Translation failed. Please try again.');
-        } finally {
-            setTranslating(false);
-            setTranslationProgress('');
-        }
-    }, [selectedLanguage, resource.fileUrl, showModal, resource]);
-
-    // Download translated PDF
-    const handleDownloadTranslated = useCallback(() => {
-        if (!translatedPdfUrl) return;
-
-        const link = document.createElement('a');
-        link.href = translatedPdfUrl;
-        link.download = `${resource.title}_translated.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        showModal('Translated PDF downloaded!');
-    }, [translatedPdfUrl, resource.title, showModal]);
-
     return (
         <>
             <Modal
@@ -183,22 +113,22 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
                 </div>
             </Modal>
 
-            <Card className="bg-onyx/60 sticky top-4">
+            <Card className="bg-card sticky top-4 border-border">
                 <CardHeader>
-                    <CardTitle className="text-amber-500 text-base md:text-lg">Resource Info</CardTitle>
+                    <CardTitle className="text-primary text-base md:text-lg">Resource Info</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm">
                     <div>
-                        <p className="text-gray-400 text-xs">Subject</p>
-                        <p className="text-white font-semibold text-sm">{resource.subject}</p>
+                        <p className="text-muted-foreground text-xs">Subject</p>
+                        <p className="text-foreground font-semibold text-sm">{resource.subject}</p>
                     </div>
                     <div>
-                        <p className="text-gray-400 text-xs">Description</p>
-                        <p className="text-gray-300 text-xs line-clamp-2">{resource.description}</p>
+                        <p className="text-muted-foreground text-xs">Description</p>
+                        <p className="text-muted-foreground/90 text-xs line-clamp-2">{resource.description}</p>
                     </div>
                     <div>
-                        <p className="text-gray-400 text-xs">Author</p>
-                        <p className="text-white text-sm">{resource.author?.email?.split('@')[0] || 'Unknown'}</p>
+                        <p className="text-muted-foreground text-xs">Author</p>
+                        <p className="text-foreground text-sm">{resource.author?.email?.split('@')[0] || 'Unknown'}</p>
                     </div>
 
                     {/* Save Button */}
@@ -240,138 +170,7 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
                         </Button>
                     </motion.div>
 
-                    {/* Translation Section */}
-                    <div className="pt-4 border-t border-white/10">
-                        <p className="text-gray-400 text-xs mb-3">Translate PDF</p>
 
-                        {!showTranslateOptions && !translatedPdfUrl && (
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <Button
-                                    onClick={() => setShowTranslateOptions(true)}
-                                    className="w-full bg-gradient-to-r text-blue-600 from-orange-600 via-white to-green-600 hover:from-orange-700 hover:to-orange-700 text-sm"
-                                >
-                                    <Languages size={16} className="mr-2" />
-                                    Translate to Indian Language
-                                </Button>
-                            </motion.div>
-                        )}
-
-                        <AnimatePresence mode="wait">
-                            {showTranslateOptions && !translatedPdfUrl && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="space-y-3"
-                                >
-                                    <select
-                                        value={selectedLanguage}
-                                        onChange={(e) => setSelectedLanguage(e.target.value)}
-                                        className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                        disabled={translating}
-                                    >
-                                        <option value="">Select Language</option>
-                                        <option value="hindi">हिंदी (Hindi)</option>
-                                        <option value="bengali">বাংলা (Bengali)</option>
-                                        <option value="tamil">தமிழ் (Tamil)</option>
-                                        <option value="telugu">తెలుగు (Telugu)</option>
-                                        <option value="marathi">मराठी (Marathi)</option>
-                                        <option value="gujarati">ગુજરાતી (Gujarati)</option>
-                                        <option value="kannada">ಕನ್ನಡ (Kannada)</option>
-                                        <option value="malayalam">മലയാളം (Malayalam)</option>
-                                        <option value="punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
-                                        <option value="odia">ଓଡ଼ିଆ (Odia)</option>
-                                        <option value="assamese">অসমীয়া (Assamese)</option>
-                                        <option value="urdu">اردو (Urdu)</option>
-                                        <option value="kashmiri">کٲشُر (Kashmiri)</option>
-                                        <option value="konkani">कोंकणी (Konkani)</option>
-                                        <option value="maithili">मैथिली (Maithili)</option>
-                                        <option value="nepali">नेपाली (Nepali)</option>
-                                        <option value="sanskrit">संस्कृतम् (Sanskrit)</option>
-                                        <option value="sindhi">سنڌي (Sindhi)</option>
-                                        <option value="santali">ᱥᱟᱱᱛᱟᱲᱤ (Santali)</option>
-                                        <option value="dogri">डोगरी (Dogri)</option>
-                                        <option value="manipuri">ꯃꯩꯇꯩꯂꯣꯟ (Manipuri)</option>
-                                        <option value="bodo">बड़ो (Bodo)</option>
-                                    </select>
-
-                                    {translating && (
-                                        <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-3">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <div className="w-4 h-4 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin"></div>
-                                                <p className="text-purple-300 text-xs font-medium">{translationProgress}</p>
-                                            </div>
-                                            <div className="w-full bg-purple-900/30 rounded-full h-1.5 overflow-hidden">
-                                                <motion.div
-                                                    className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
-                                                    initial={{ width: '0%' }}
-                                                    animate={{ width: '100%' }}
-                                                    transition={{ duration: 2, ease: 'easeInOut' }}
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="flex gap-2">
-                                        <Button
-                                            onClick={() => {
-                                                setShowTranslateOptions(false);
-                                                setSelectedLanguage('');
-                                            }}
-                                            className="flex-1 bg-gray-600 hover:bg-gray-700 text-xs"
-                                            disabled={translating}
-                                        >
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            onClick={handleTranslate}
-                                            className="flex-1 bg-gradient-to-r text-white from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-xs"
-                                            disabled={translating || !selectedLanguage}
-                                        >
-                                            {translating ? 'Translating...' : 'Translate'}
-                                        </Button>
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {translatedPdfUrl && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="space-y-2"
-                                >
-                                    <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3">
-                                        <p className="text-green-300 text-xs font-medium mb-1">✓ Translation Complete!</p>
-                                        <p className="text-gray-400 text-xs">Your translated PDF is ready to download.</p>
-                                    </div>
-
-                                    <Button
-                                        onClick={handleDownloadTranslated}
-                                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-sm"
-                                    >
-                                        <DownloadIcon size={16} className="mr-2" />
-                                        Download Translated PDF
-                                    </Button>
-
-                                    <Button
-                                        onClick={() => {
-                                            setTranslatedPdfUrl('');
-                                            setSelectedLanguage('');
-                                            setShowTranslateOptions(false);
-                                        }}
-                                        className="w-full bg-gray-700 hover:bg-gray-600 text-xs"
-                                    >
-                                        Translate to Another Language
-                                    </Button>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
                 </CardContent>
             </Card>
         </>

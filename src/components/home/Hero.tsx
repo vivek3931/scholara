@@ -375,10 +375,10 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.1 }}
-                    className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white"
+                    className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-foreground"
                 >
                     Unlock Your{' '}
-                    <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-600 bg-clip-text text-transparent">
+                    <span className="text-primary">
                         Academic Potential
                     </span>
                 </motion.h1>
@@ -387,7 +387,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-base sm:text-lg lg:text-xl mb-8 max-w-2xl mx-auto text-gray-300"
+                    className="text-base sm:text-lg lg:text-xl mb-8 max-w-2xl mx-auto text-muted-foreground"
                 >
                     Seamlessly discover, contribute, and organize a wealth of study materials – from
                     notes to past papers, all in one place, absolutely free!
@@ -400,13 +400,13 @@ export default function Hero() {
                     className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg sm:max-w-none mx-auto"
                 >
                     <Link href="/upload">
-                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-bold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-gradient-to-r from-amber-400 to-amber-500 text-onyx hover:from-amber-500 hover:to-amber-600 text-sm sm:text-base shadow-lg hover:shadow-xl">
+                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-bold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-primary text-primary-foreground hover:bg-primary/90 text-sm sm:text-base shadow-lg hover:shadow-xl">
                             <CloudUpload className="w-5 h-5" />
                             <span>Upload Resources</span>
                         </Button>
                     </Link>
                     <Link href="/browse">
-                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-transparent text-amber-500 border-2 border-amber-500 hover:bg-amber-500 hover:text-onyx text-sm sm:text-base">
+                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-primary-foreground text-sm sm:text-base">
                             <Search className="w-5 h-5" />
                             <span>Explore Materials</span>
                         </Button>

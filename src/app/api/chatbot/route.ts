@@ -1,67 +1,44 @@
 import { NextResponse } from 'next/server';
-import { vectorStore } from '@/lib/ai/vector-store';
-import { aiEngine } from '@/lib/ai/engine';
-import { searchWeb } from '@/lib/ai/web-search';
+import { chatbotOrchestrator } from '@/lib/chatbot/orchestrator';
 
 export async function POST(req: Request) {
     try {
-        const { message, history } = await req.json();
+        const { message, history, sessionId, resourceUrl } = await req.json();
 
         if (!message) {
             return NextResponse.json({ error: 'Message is required' }, { status: 400 });
         }
 
-        console.log(`[Chatbot] Received message: "${message}"`);
+        console.log(`[Chatbot API] Received message: "${message}"`);
 
-        // 1. Search Local Knowledge Base
-        let context = '';
-        let sources: string[] = [];
-        let usedWeb = false;
+        // Use session ID or generate one
+        const session = sessionId || `session-${Date.now()}`;
 
-        try {
-            const results = await vectorStore.search(message, 3);
+        // Process question using the new pure intelligent retrieval orchestrator
+        const response = await chatbotOrchestrator.processQuestion(message, session, resourceUrl);
 
-            // Filter results with a minimum score threshold (lower distance is better in Chroma)
-            // Note: Chroma distances are usually L2 or Cosine distance.
-            // We'll assume if we get results, they are somewhat relevant, but we can check distance.
-            // For now, just take them.
-
-            if (results.length > 0) {
-                context = results.map((r) => r.text).join('\n\n');
-                sources = results.map((r) => r.metadata.title || 'Unknown Document');
-                // Deduplicate sources
-                sources = [...new Set(sources)];
-                console.log(`[Chatbot] Found ${results.length} local documents.`);
-            }
-        } catch (error) {
-            console.error('[Chatbot] Vector search failed:', error);
-        }
-
-        // 2. Web Search Fallback
-        // If no context found or context is very short, try web search
-        if (!context || context.length < 50) {
-            console.log('[Chatbot] Low local context, attempting web search...');
-            const webResults = await searchWeb(message);
-            if (webResults.summary) {
-                context = `Web Search Results:\n${webResults.summary}`;
-                sources = webResults.sources;
-                usedWeb = true;
-            }
-        }
-
-        // 3. Generate Answer
-        const answer = await aiEngine.generateResponse(message, context);
-
+        // Return response in expected format
         return NextResponse.json({
-            answer,
-            sources,
-            usedWeb,
+            answer: response.answer,
+            sources: response.sources || [],
+            usedWeb: response.usedWeb || false,
+            confidence: response.confidence || 0,
+            generationMethod: response.generationMethod || 'retrieval',
+            retrievalStats: response.retrievalStats || null,
+            relatedQuestions: response.relatedQuestions || []
         });
 
     } catch (error: any) {
-        console.error('[Chatbot] Error:', error);
+        console.error('[Chatbot API] Error:', error);
         return NextResponse.json(
-            { error: 'Internal server error', details: error.message },
+            {
+                error: 'Internal server error',
+                details: error.message,
+                answer: "I apologize, but I encountered an error processing your question. Please try again.",
+                sources: [],
+                usedWeb: false,
+                confidence: 0
+            },
             { status: 500 }
         );
     }

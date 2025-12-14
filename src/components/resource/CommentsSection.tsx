@@ -49,7 +49,7 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
     };
 
     return (
-        <Card className="bg-onyx/60 mt-6">
+        <Card className="bg-card mt-6 border-border">
             <CardHeader>
                 <CardTitle className="text-base md:text-lg">
                     Comments {!isLoading && `(${comments.length})`}
@@ -82,13 +82,13 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.15, delay: idx * 0.02 }}
-                            className="border-b border-white/5 pb-3"
+                            className="border-b border-border pb-3"
                         >
                             <div className="flex justify-between mb-1">
-                                <span className="font-bold text-amber-500 text-xs md:text-sm">{c.user?.email?.split('@')[0] || 'User'}</span>
-                                <span className="text-xs text-gray-500">{new Date(c.createdAt).toLocaleDateString()}</span>
+                                <span className="font-bold text-primary text-xs md:text-sm">{c.user?.email?.split('@')[0] || 'User'}</span>
+                                <span className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleDateString()}</span>
                             </div>
-                            <p className="text-xs md:text-sm text-gray-300">{c.content}</p>
+                            <p className="text-xs md:text-sm text-card-foreground">{c.content}</p>
                         </motion.div>
                     ))}
 

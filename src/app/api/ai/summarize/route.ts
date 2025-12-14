@@ -2,14 +2,32 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { extractTextFromPDF } from '@/lib/pdfUtils';
 import { aiService } from '@/lib/aiService';
+import { getSession } from '@/lib/auth';
 
 export async function POST(req: Request) {
     try {
+        const session = await getSession();
+        if (!session) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await req.json();
         const { resourceId, pages } = body;
 
         if (!resourceId) {
             return NextResponse.json({ error: 'Resource ID is required' }, { status: 400 });
+        }
+
+        const user = await prisma.user.findUnique({ where: { id: session.userId } });
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        if (!user.isPro) {
+            return NextResponse.json({
+                error: 'This feature is available only for Pro users.',
+                requiresPro: true
+            }, { status: 403 });
         }
 
         const resource = await prisma.resource.findUnique({

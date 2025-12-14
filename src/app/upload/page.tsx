@@ -23,6 +23,7 @@ export default function UploadPage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [modalType, setModalType] = useState<'success' | 'error' | 'info'>('info');
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
@@ -52,6 +53,8 @@ export default function UploadPage() {
         } catch (error) {
             console.error('Auth check failed:', error);
             router.push('/login');
+        } finally {
+            setIsCheckingAuth(false);
         }
     };
 
@@ -147,16 +150,16 @@ export default function UploadPage() {
         }
     };
 
-    if (!isLoggedIn) {
+    if (!isLoggedIn && !isCheckingAuth) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-onyx via-onyx to-gray-900 text-white flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <motion.div
                     className="text-center"
                     animate={{ opacity: 1, y: 0 }}
                     initial={{ opacity: 0, y: 10 }}
                 >
-                    <Loader2 className="w-12 h-12 text-amber-500 mx-auto animate-spin mb-4" />
-                    <p className="text-gray-400">Loading...</p>
+                    <Loader2 className="w-12 h-12 text-primary mx-auto animate-spin mb-4" />
+                    <p className="text-muted-foreground">Loading...</p>
                 </motion.div>
             </div>
         );
@@ -165,20 +168,20 @@ export default function UploadPage() {
     const isFormComplete = title.trim() && description.trim() && subject && fileUrl;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-onyx via-onyx to-gray-900 text-white pb-12">
+        <div className="min-h-screen bg-background text-foreground pb-12">
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
                 title={modalType === 'success' ? 'Success' : modalType === 'error' ? 'Error' : 'Info'}
             >
                 <div className="flex items-start gap-3">
-                    {modalType === 'success' && <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />}
-                    {modalType === 'error' && <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />}
-                    <p className="text-sm text-gray-300">{modalMessage}</p>
+                    {modalType === 'success' && <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />}
+                    {modalType === 'error' && <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />}
+                    <p className="text-sm text-foreground">{modalMessage}</p>
                 </div>
             </Modal>
 
-            <div className="container mx-auto py-12 px-4">
+            <div className="container max-w-7xl mx-auto py-12 px-4">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -188,199 +191,226 @@ export default function UploadPage() {
                     {/* Header */}
                     <div className="mb-8 text-center">
                         <div className="flex items-center justify-center gap-2 mb-4">
-                            <BookOpen className="w-8 h-8 text-amber-500" />
-                            <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">
+                            <h1 className="text-3xl md:text-4xl font-bold text-black">
                                 Share Knowledge
                             </h1>
                         </div>
-                        <p className="text-gray-400">Upload educational resources and earn coins</p>
+                        <p className="text-muted-foreground">Upload educational resources and earn coins</p>
                     </div>
 
-                    <Card className="border-amber-500/20 bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-sm shadow-2xl">
-                        <CardHeader className="border-b border-white/10">
-                            <CardTitle className="text-amber-500 flex items-center gap-2">
+                    <Card className="border-border bg-card shadow-2xl">
+                        <CardHeader className="border-b border-border">
+                            <CardTitle className="text-primary flex items-center gap-2">
                                 <Upload className="w-5 h-5" />
                                 Upload Resource
                             </CardTitle>
-                            <p className="text-xs text-gray-500 mt-2">Fill in the details and upload your PDF</p>
+                            <p className="text-xs text-muted-foreground mt-2">Fill in the details and upload your PDF</p>
                         </CardHeader>
 
                         <CardContent className="pt-8">
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* Title Input */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 }}
-                                >
-                                    <label className="block text-sm font-semibold mb-2 text-gray-300">
-                                        Title <span className="text-red-400">*</span>
-                                    </label>
-                                    <Input
-                                        value={title}
-                                        onChange={e => setTitle(e.target.value)}
-                                        required
-                                        placeholder="e.g., Advanced Calculus Chapter 5"
-                                        disabled={loading || uploading}
-                                        className="bg-white/5 border-white/20 focus:border-amber-500 focus:ring-amber-500"
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">{title.length}/100 characters</p>
-                                </motion.div>
+                            {isCheckingAuth ? (
+                                <div className="space-y-6">
+                                    {/* Title Skeleton */}
+                                    <div className="space-y-2">
+                                        <div className="h-4 bg-muted rounded w-20 animate-pulse" />
+                                        <div className="h-10 bg-muted rounded animate-pulse" />
+                                    </div>
 
-                                {/* Description Input */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.15 }}
-                                >
-                                    <label className="block text-sm font-semibold mb-2 text-gray-300">
-                                        Description <span className="text-red-400">*</span>
-                                    </label>
-                                    <textarea
-                                        className="flex w-full rounded-lg border border-white/20 bg-white/5 backdrop-blur px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder:text-gray-500 disabled:opacity-50 transition-all"
-                                        rows={4}
-                                        value={description}
-                                        onChange={e => setDescription(e.target.value)}
-                                        required
-                                        placeholder="Describe what this resource covers..."
-                                        disabled={loading || uploading}
-                                        maxLength={500}
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">{description.length}/500 characters</p>
-                                </motion.div>
+                                    {/* Description Skeleton */}
+                                    <div className="space-y-2">
+                                        <div className="h-4 bg-muted rounded w-24 animate-pulse" />
+                                        <div className="h-32 bg-muted rounded animate-pulse" />
+                                    </div>
 
-                                {/* Subject Select */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2 }}
-                                >
-                                    <label className="block text-sm font-semibold mb-2 text-gray-300">
-                                        Subject <span className="text-red-400">*</span>
-                                    </label>
-                                    <select
-                                        className="flex w-full rounded-lg border border-white/20 bg-white/5 backdrop-blur px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 transition-all"
-                                        value={subject}
-                                        onChange={e => setSubject(e.target.value)}
-                                        required
-                                        disabled={loading || uploading}
-                                    >
-                                        <option value="" className="bg-gray-900">Select a subject</option>
-                                        {subjects.map((s, i) => (
-                                            <option key={i} value={s.value} className="bg-gray-900">{s.label}</option>
-                                        ))}
-                                    </select>
-                                </motion.div>
+                                    {/* Subject Skeleton */}
+                                    <div className="space-y-2">
+                                        <div className="h-4 bg-muted rounded w-16 animate-pulse" />
+                                        <div className="h-10 bg-muted rounded animate-pulse" />
+                                    </div>
 
-                                {/* File Upload */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.25 }}
-                                >
-                                    <label className="block text-sm font-semibold mb-2 text-gray-300">
-                                        PDF File <span className="text-red-400">*</span>
-                                    </label>            </motion.div>
+                                    {/* Upload Area Skeleton */}
+                                    <div className="h-48 bg-muted/20 rounded-lg border-2 border-dashed border-border animate-pulse" />
 
-                                <CldUploadWidget
-                                    uploadPreset="scholara_preset"
-                                    onSuccess={(result) => handleUploadSuccess(result)}
-                                    onError={(error) => handleUploadError(error)}
-                                    onUploadAdded={() => setUploading(true)}   // NEW alternative for "queues-start"
-                                    onQueuesEnd={() => setUploading(false)}    // NEW alternative for "queues-end"
-                                    options={{
-                                        maxFileSize: 10485760,
-                                        maxFiles: 1,
-                                        resourceType: "auto",
-                                        folder: "scholara/resources",
-                                        clientAllowedFormats: ["pdf"],
-                                    }}
-                                >
-                                    {({ open }) => (
-                                        <div>
-                                            <motion.div
-                                                onClick={() => !loading && !uploading && open()}
-                                                whileHover={!loading && !uploading ? { scale: 1.01 } : {}}
-                                                whileTap={!loading && !uploading ? { scale: 0.99 } : {}}
-                                                className={`border-2 border-dashed rounded-lg p-8 md:p-12 text-center cursor-pointer transition-all ${fileUrl
-                                                    ? "border-green-500/50 bg-green-500/10 backdrop-blur"
-                                                    : "border-amber-500/30 hover:border-amber-500 bg-amber-500/5 hover:bg-amber-500/10"
-                                                    } ${uploading ? "opacity-60" : ""}`}
-                                            >
-                                                {uploading ? (
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-                                                        <p className="text-sm text-amber-400 font-medium">Uploading...</p>
-                                                    </div>
-                                                ) : fileUrl ? (
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <CheckCircle2 className="w-8 h-8 text-green-400" />
-                                                        <p className="text-green-400 font-semibold">File Uploaded</p>
-                                                        <p className="text-xs text-green-400/70 truncate max-w-xs">{fileName}</p>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <FileText className="w-8 h-8 text-amber-500" />
-                                                        <p className="text-gray-300 font-medium">Click to upload PDF</p>
-                                                        <p className="text-xs text-gray-500">Max 10MB • PDF only</p>
-                                                    </div>
-                                                )}
-                                            </motion.div>
-
-                                            {fileUrl && (
-                                                <motion.button
-                                                    initial={{ opacity: 0, y: -5 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    type="button"
-                                                    onClick={() => setFileUrl("")}
-                                                    className="mt-3 text-xs text-red-400 hover:text-red-300 underline transition-colors"
-                                                >
-                                                    Remove file
-                                                </motion.button>
-                                            )}
-                                        </div>
-                                    )}
-                                </CldUploadWidget>
-
-
-                                {/* Submit Button */}
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 }}
-                                    whileHover={isFormComplete && !loading ? { scale: 1.02 } : {}}
-                                    whileTap={isFormComplete && !loading ? { scale: 0.98 } : {}}
-                                >
-                                    <Button
-                                        type="submit"
-                                        className={`w-full py-3 font-bold text-base transition-all ${isFormComplete && !loading && !uploading
-                                            ? 'bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white shadow-lg'
-                                            : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                                            }`}
-                                        disabled={!isFormComplete || loading || uploading}
-                                    >
-                                        {loading ? (
-                                            <span className="flex items-center justify-center gap-2">
-                                                <Loader2 className="w-4 h-4 animate-spin" />
-                                                Publishing...
-                                            </span>
-                                        ) : (
-                                            `Publish Resource (+50 Coins)`
-                                        )}
-                                    </Button>
-                                </motion.div>
-
-                                {/* Form Status */}
-                                {!isFormComplete && (
+                                    {/* Button Skeleton */}
+                                    <div className="h-12 bg-primary/20 rounded animate-pulse" />
+                                </div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    {/* Title Input */}
                                     <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="text-xs text-gray-500 text-center"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1 }}
                                     >
-                                        Complete all fields above to publish
+                                        <label className="block text-sm font-semibold mb-2 text-foreground">
+                                            Title <span className="text-destructive">*</span>
+                                        </label>
+                                        <Input
+                                            value={title}
+                                            onChange={e => setTitle(e.target.value)}
+                                            required
+                                            placeholder="e.g., Advanced Calculus Chapter 5"
+                                            disabled={loading || uploading}
+                                            className="bg-background border-input focus:border-primary focus:ring-primary"
+                                        />
+                                        <p className="text-xs text-muted-foreground mt-1">{title.length}/100 characters</p>
                                     </motion.div>
-                                )}
-                            </form>
+
+                                    {/* Description Input */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.15 }}
+                                    >
+                                        <label className="block text-sm font-semibold mb-2 text-foreground">
+                                            Description <span className="text-destructive">*</span>
+                                        </label>
+                                        <textarea
+                                            className="flex w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-muted-foreground disabled:opacity-50 transition-all shadow-sm"
+                                            rows={4}
+                                            value={description}
+                                            onChange={e => setDescription(e.target.value)}
+                                            required
+                                            placeholder="Describe what this resource covers..."
+                                            disabled={loading || uploading}
+                                            maxLength={500}
+                                        />
+                                        <p className="text-xs text-muted-foreground mt-1">{description.length}/500 characters</p>
+                                    </motion.div>
+
+                                    {/* Subject Select */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                    >
+                                        <label className="block text-sm font-semibold mb-2 text-foreground">
+                                            Subject <span className="text-destructive">*</span>
+                                        </label>
+                                        <select
+                                            className="flex w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 transition-all shadow-sm"
+                                            value={subject}
+                                            onChange={e => setSubject(e.target.value)}
+                                            required
+                                            disabled={loading || uploading}
+                                        >
+                                            <option value="" className="bg-background">Select a subject</option>
+                                            {subjects.map((s, i) => (
+                                                <option key={i} value={s.value} className="bg-background">{s.label}</option>
+                                            ))}
+                                        </select>
+                                    </motion.div>
+
+                                    {/* File Upload */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.25 }}
+                                    >
+                                        <label className="block text-sm font-semibold mb-2 text-foreground">
+                                            PDF File <span className="text-destructive">*</span>
+                                        </label>            </motion.div>
+
+                                    <CldUploadWidget
+                                        uploadPreset="scholara_preset"
+                                        onSuccess={(result) => handleUploadSuccess(result)}
+                                        onError={(error) => handleUploadError(error)}
+                                        onUploadAdded={() => setUploading(true)}   // NEW alternative for "queues-start"
+                                        onQueuesEnd={() => setUploading(false)}    // NEW alternative for "queues-end"
+                                        options={{
+                                            maxFileSize: 10485760,
+                                            maxFiles: 1,
+                                            resourceType: "auto",
+                                            folder: "scholara/resources",
+                                            clientAllowedFormats: ["pdf"],
+                                        }}
+                                    >
+                                        {({ open }) => (
+                                            <div>
+                                                <motion.div
+                                                    onClick={() => !loading && !uploading && open()}
+                                                    whileHover={!loading && !uploading ? { scale: 1.01 } : {}}
+                                                    whileTap={!loading && !uploading ? { scale: 0.99 } : {}}
+                                                    className={`border-2 border-dashed rounded-lg p-8 md:p-12 text-center cursor-pointer transition-all ${fileUrl
+                                                        ? "border-green-500/50 bg-green-500/10 backdrop-blur"
+                                                        : "border-primary/20 hover:border-primary/50 bg-muted/30 hover:bg-muted/50"
+                                                        } ${uploading ? "opacity-60" : ""}`}
+                                                >
+                                                    {uploading ? (
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                                                            <p className="text-sm text-primary font-medium">Uploading...</p>
+                                                        </div>
+                                                    ) : fileUrl ? (
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <CheckCircle2 className="w-8 h-8 text-green-500" />
+                                                            <p className="text-green-500 font-semibold">File Uploaded</p>
+                                                            <p className="text-xs text-green-500/70 truncate max-w-xs">{fileName}</p>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <FileText className="w-8 h-8 text-primary" />
+                                                            <p className="text-foreground font-medium">Click to upload PDF</p>
+                                                            <p className="text-xs text-muted-foreground">Max 10MB • PDF only</p>
+                                                        </div>
+                                                    )}
+                                                </motion.div>
+
+                                                {fileUrl && (
+                                                    <motion.button
+                                                        initial={{ opacity: 0, y: -5 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        type="button"
+                                                        onClick={() => setFileUrl("")}
+                                                        className="mt-3 text-xs text-destructive hover:text-destructive/80 underline transition-colors"
+                                                    >
+                                                        Remove file
+                                                    </motion.button>
+                                                )}
+                                            </div>
+                                        )}
+                                    </CldUploadWidget>
+
+
+                                    {/* Submit Button */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3 }}
+                                        whileHover={isFormComplete && !loading ? { scale: 1.02 } : {}}
+                                        whileTap={isFormComplete && !loading ? { scale: 0.98 } : {}}
+                                    >
+                                        <Button
+                                            type="submit"
+                                            className={`w-full py-3 font-bold text-base transition-all ${isFormComplete && !loading && !uploading
+                                                ? 'bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg'
+                                                : 'bg-muted text-muted-foreground cursor-not-allowed'
+                                                }`}
+                                            disabled={!isFormComplete || loading || uploading}
+                                        >
+                                            {loading ? (
+                                                <span className="flex items-center justify-center gap-2">
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                    Publishing...
+                                                </span>
+                                            ) : (
+                                                `Publish Resource (+50 Coins)`
+                                            )}
+                                        </Button>
+                                    </motion.div>
+
+                                    {/* Form Status */}
+                                    {!isFormComplete && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="text-xs text-muted-foreground text-center"
+                                        >
+                                            Complete all fields above to publish
+                                        </motion.div>
+                                    )}
+                                </form>
+                            )}
                         </CardContent>
                     </Card>
 

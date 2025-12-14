@@ -37,14 +37,14 @@ export default function CommunityClient({ data }: { data: any }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
             >
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-amber-500/20 border border-amber-500/30 rounded-full px-4 py-2 mb-4">
-                    <Sparkles size={16} className="text-amber-400" />
-                    <span className="text-sm text-amber-300">Welcome to the Community</span>
+                <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-4">
+                    <Sparkles size={16} className="text-primary" />
+                    <span className="text-sm text-primary">Welcome to the Community</span>
                 </div>
-                <h1 className="text-5xl font-bold text-pearl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-amber-400">
+                <h1 className="text-5xl font-bold text-foreground mb-4">
                     Learn Together, Grow Together
                 </h1>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                     Connect with fellow learners, share knowledge, and celebrate academic excellence
                 </p>
             </motion.div>
@@ -58,15 +58,15 @@ export default function CommunityClient({ data }: { data: any }) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
                     >
-                        <Card className="bg-gradient-to-br from-charcoal/80 to-onyx/80 border-white/10 hover:border-white/20 transition-all duration-300 group">
+                        <Card className="bg-card border-border hover:border-primary/20 transition-all duration-300 group shadow-sm">
                             <CardContent className="p-6">
                                 <div className="flex items-center gap-4">
-                                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                                        <stat.icon size={24} className="text-white" />
+                                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 text-white`}>
+                                        <stat.icon size={24} />
                                     </div>
                                     <div>
-                                        <p className="text-2xl font-bold text-pearl">{stat.value}</p>
-                                        <p className="text-xs text-gray-400">{stat.label}</p>
+                                        <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                                        <p className="text-xs text-muted-foreground">{stat.label}</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -84,10 +84,10 @@ export default function CommunityClient({ data }: { data: any }) {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <Card className="bg-gradient-to-br from-charcoal/80 to-onyx/80 border-white/10">
-                            <CardHeader className="border-b border-white/5">
-                                <CardTitle className="text-xl text-pearl flex items-center gap-2">
-                                    <Clock size={20} className="text-cyan-400" />
+                        <Card className="bg-card border-border shadow-sm">
+                            <CardHeader className="border-b border-border">
+                                <CardTitle className="text-xl text-foreground flex items-center gap-2">
+                                    <Clock size={20} className="text-primary" />
                                     Recent Activity
                                 </CardTitle>
                             </CardHeader>
@@ -99,27 +99,27 @@ export default function CommunityClient({ data }: { data: any }) {
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.05 }}
-                                            className="flex gap-4 p-4 rounded-xl bg-gradient-to-r from-white/5 to-white/[0.02] hover:from-white/10 hover:to-white/5 border border-white/5 hover:border-white/10 transition-all duration-300 group"
+                                            className="flex gap-4 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border transition-all duration-300 group"
                                         >
                                             {activity.type === 'upload' ? (
                                                 <>
-                                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                        <Upload size={18} className="text-white" />
+                                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                        <Upload size={18} className="text-primary" />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-sm text-gray-300">
-                                                            <span className="font-bold text-amber-400">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            <span className="font-bold text-primary">
                                                                 {activity.data.author?.email.split('@')[0]}
                                                             </span>
                                                             {' '}uploaded a new resource
                                                         </p>
                                                         <Link href={`/resource/${activity.data.id}`}>
-                                                            <p className="text-pearl font-semibold hover:text-amber-400 transition-colors line-clamp-1">
+                                                            <p className="text-foreground font-semibold hover:text-primary transition-colors line-clamp-1">
                                                                 {activity.data.title}
                                                             </p>
                                                         </Link>
-                                                        <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
-                                                            <span className="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">
+                                                        <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                                                            <span className="bg-primary/10 text-primary px-2 py-0.5 rounded">
                                                                 {activity.data.subject}
                                                             </span>
                                                             <span>{new Date(activity.timestamp).toLocaleString()}</span>
@@ -128,25 +128,25 @@ export default function CommunityClient({ data }: { data: any }) {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                        <MessageCircle size={18} className="text-white" />
+                                                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                        <MessageCircle size={18} className="text-accent-foreground" />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-sm text-gray-300">
-                                                            <span className="font-bold text-cyan-400">
+                                                        <p className="text-sm text-muted-foreground">
+                                                            <span className="font-bold text-accent-foreground">
                                                                 {activity.data.user?.email.split('@')[0]}
                                                             </span>
                                                             {' '}commented on
                                                         </p>
                                                         <Link href={`/resource/${activity.data.resource.id}`}>
-                                                            <p className="text-pearl font-semibold hover:text-cyan-400 transition-colors line-clamp-1">
+                                                            <p className="text-foreground font-semibold hover:text-accent-foreground transition-colors line-clamp-1">
                                                                 {activity.data.resource.title}
                                                             </p>
                                                         </Link>
-                                                        <p className="text-gray-400 text-sm mt-1 line-clamp-2">
+                                                        <p className="text-muted-foreground text-sm mt-1 line-clamp-2">
                                                             {activity.data.content}
                                                         </p>
-                                                        <span className="text-xs text-gray-500 mt-2 inline-block">
+                                                        <span className="text-xs text-muted-foreground mt-2 inline-block">
                                                             {new Date(activity.timestamp).toLocaleString()}
                                                         </span>
                                                     </div>
@@ -167,10 +167,10 @@ export default function CommunityClient({ data }: { data: any }) {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
                     >
-                        <Card className="bg-gradient-to-br from-charcoal/80 to-onyx/80 border-white/10 sticky top-4">
-                            <CardHeader className="border-b border-white/5">
-                                <CardTitle className="text-xl text-pearl flex items-center gap-2">
-                                    <Award size={20} className="text-purple-400" />
+                        <Card className="bg-card border-border sticky top-4 shadow-sm">
+                            <CardHeader className="border-b border-border">
+                                <CardTitle className="text-xl text-foreground flex items-center gap-2">
+                                    <Award size={20} className="text-purple-500" />
                                     Top Contributors
                                 </CardTitle>
                             </CardHeader>
@@ -183,18 +183,18 @@ export default function CommunityClient({ data }: { data: any }) {
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.3 + (index * 0.05) }}
                                             className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${index < 3
-                                                    ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30'
-                                                    : 'bg-white/5 border border-white/5 hover:border-white/10'
+                                                ? 'bg-primary/5 border border-primary/20'
+                                                : 'bg-muted/30 border border-border hover:border-border/80'
                                                 }`}
                                         >
                                             <div className="relative">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${index === 0
-                                                        ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white'
-                                                        : index === 1
-                                                            ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-800'
-                                                            : index === 2
-                                                                ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white'
-                                                                : 'bg-gradient-to-br from-purple-500 to-purple-600 text-white'
+                                                    ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white'
+                                                    : index === 1
+                                                        ? 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-800'
+                                                        : index === 2
+                                                            ? 'bg-gradient-to-br from-amber-600 to-amber-700 text-white'
+                                                            : 'bg-gradient-to-br from-purple-500 to-purple-600 text-white'
                                                     }`}>
                                                     {index < 3 ? (
                                                         <Crown size={16} />
@@ -202,12 +202,12 @@ export default function CommunityClient({ data }: { data: any }) {
                                                         contributor.email[0].toUpperCase()
                                                     )}
                                                 </div>
-                                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-charcoal rounded-full flex items-center justify-center text-[10px] font-bold text-gray-400 border border-white/10">
+                                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-background rounded-full flex items-center justify-center text-[10px] font-bold text-muted-foreground border border-border">
                                                     #{index + 1}
                                                 </div>
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className={`font-semibold truncate ${index < 3 ? 'text-amber-400' : 'text-gray-300'
+                                                <p className={`font-semibold truncate ${index < 3 ? 'text-primary' : 'text-foreground'
                                                     }`}>
                                                     {contributor.email.split('@')[0]}
                                                 </p>

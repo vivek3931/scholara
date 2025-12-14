@@ -131,84 +131,8 @@ export default function SettingsPage() {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-onyx via-charcoal to-onyx pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-4xl mx-auto space-y-8">
-                    {/* Header - Always visible */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-                        <p className="text-gray-400">Manage your profile and resources</p>
-                    </motion.div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Profile Skeleton */}
-                        <div className="md:col-span-1">
-                            <Card className="bg-onyx/60 border-white/10 sticky top-24 backdrop-blur-sm">
-                                <CardHeader>
-                                    <CardTitle className="text-amber-500 flex items-center gap-2">
-                                        <User size={20} />
-                                        Profile
-                                    </CardTitle>
-                                    <CardDescription>Update your account information</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {/* Email skeleton */}
-                                    <div className="space-y-2">
-                                        <div className="h-3 bg-white/10 rounded w-12 animate-pulse" />
-                                        <div className="h-10 bg-white/5 rounded animate-pulse" />
-                                    </div>
-                                    {/* Username skeleton */}
-                                    <div className="space-y-2">
-                                        <div className="h-3 bg-white/10 rounded w-16 animate-pulse" />
-                                        <div className="h-10 bg-white/5 rounded animate-pulse" />
-                                    </div>
-                                    {/* Password skeleton */}
-                                    <div className="space-y-2">
-                                        <div className="h-3 bg-white/10 rounded w-24 animate-pulse" />
-                                        <div className="h-10 bg-white/5 rounded animate-pulse" />
-                                    </div>
-                                    {/* Button skeleton */}
-                                    <div className="h-10 bg-amber-500/20 rounded animate-pulse" />
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        {/* Resources Skeleton */}
-                        <div className="md:col-span-2">
-                            <Card className="bg-onyx/60 border-white/10 backdrop-blur-sm">
-                                <CardHeader>
-                                    <CardTitle className="text-amber-500 flex items-center gap-2">
-                                        <FileText size={20} />
-                                        My Resources
-                                    </CardTitle>
-                                    <CardDescription>Manage your uploaded resources</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="flex items-center justify-between p-4 bg-black/20 rounded-lg border border-white/5 relative overflow-hidden">
-                                            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-                                            <div className="flex-1 space-y-2 relative z-10">
-                                                <div className="h-4 bg-white/10 rounded w-3/4 animate-pulse" />
-                                                <div className="h-3 bg-white/10 rounded w-1/2 animate-pulse" />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-onyx via-charcoal to-onyx pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative">
+        <div className="min-h-screen bg-background pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative">
             {/* Delete Confirmation Modal */}
             <Modal
                 isOpen={deleteModalOpen}
@@ -216,20 +140,20 @@ export default function SettingsPage() {
                 title="Delete Resource"
             >
                 <div className="space-y-4">
-                    <p className="text-gray-300">
+                    <p className="text-muted-foreground">
                         Are you sure you want to delete this resource? This action cannot be undone.
                     </p>
                     <div className="flex justify-end gap-3 pt-2">
                         <Button
                             variant="ghost"
                             onClick={() => setDeleteModalOpen(false)}
-                            className="text-gray-400 hover:text-white"
+                            className="text-muted-foreground hover:text-foreground"
                         >
                             Cancel
                         </Button>
                         <Button
                             onClick={handleDeleteResource}
-                            className="bg-red-600 hover:bg-red-700 text-white border-none"
+                            className="bg-destructive hover:bg-destructive/90 text-destructive-foreground border-none"
                         >
                             Delete
                         </Button>
@@ -237,14 +161,14 @@ export default function SettingsPage() {
                 </div>
             </Modal>
 
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="max-w-7xl mx-auto space-y-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-                    <p className="text-gray-400">Manage your profile and resources</p>
+                    <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
+                    <p className="text-muted-foreground">Manage your profile and resources</p>
                 </motion.div>
 
                 {message && (
@@ -252,7 +176,7 @@ export default function SettingsPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-900/20 text-green-400 border border-green-500/30' : 'bg-red-900/20 text-red-400 border border-red-500/30'
+                        className={`p-4 rounded-lg flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/10 text-green-500 border border-green-500/30' : 'bg-destructive/10 text-destructive border border-destructive/30'
                             }`}
                     >
                         {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
@@ -268,55 +192,73 @@ export default function SettingsPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <Card className="bg-onyx/60 border-white/10 sticky top-24 backdrop-blur-sm">
+                        <Card className="bg-card border-border sticky top-24 backdrop-blur-sm">
                             <CardHeader>
-                                <CardTitle className="text-amber-500 flex items-center gap-2">
+                                <CardTitle className="text-primary flex items-center gap-2">
                                     <User size={20} />
                                     Profile
                                 </CardTitle>
                                 <CardDescription>Update your account information</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <form onSubmit={handleUpdateProfile} className="space-y-4">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-300">Email</label>
-                                        <Input value={user?.email} disabled className="bg-black/20 text-gray-500 border-white/5" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-300">Username</label>
-                                        <Input
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                            placeholder="Set a username"
-                                            className="bg-black/20 border-white/10 focus:border-amber-500/50 text-white"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-300">New Password</label>
-                                        <Input
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Leave blank to keep current"
-                                            className="bg-black/20 border-white/10 focus:border-amber-500/50 text-white"
-                                        />
-                                    </div>
-                                    {password && (
+                                {loading ? (
+                                    <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-gray-300">Confirm Password</label>
+                                            <div className="h-3 bg-muted rounded w-12 animate-pulse" />
+                                            <div className="h-10 bg-muted rounded animate-pulse" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="h-3 bg-muted rounded w-16 animate-pulse" />
+                                            <div className="h-10 bg-muted rounded animate-pulse" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="h-3 bg-muted rounded w-24 animate-pulse" />
+                                            <div className="h-10 bg-muted rounded animate-pulse" />
+                                        </div>
+                                        <div className="h-10 bg-primary/20 rounded animate-pulse" />
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleUpdateProfile} className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-foreground">Email</label>
+                                            <Input value={user?.email} disabled className="bg-muted text-muted-foreground border-border" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-foreground">Username</label>
                                             <Input
-                                                type="password"
-                                                value={confirmPassword}
-                                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                                placeholder="Confirm new password"
-                                                className="bg-black/20 border-white/10 focus:border-amber-500/50 text-white"
+                                                value={username}
+                                                onChange={(e) => setUsername(e.target.value)}
+                                                placeholder="Set a username"
+                                                className="bg-background border-input focus:border-primary/50 text-foreground"
                                             />
                                         </div>
-                                    )}
-                                    <Button type="submit" className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600">
-                                        Save Changes
-                                    </Button>
-                                </form>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-foreground">New Password</label>
+                                            <Input
+                                                type="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                placeholder="Leave blank to keep current"
+                                                className="bg-background border-input focus:border-primary/50 text-foreground"
+                                            />
+                                        </div>
+                                        {password && (
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-foreground">Confirm Password</label>
+                                                <Input
+                                                    type="password"
+                                                    value={confirmPassword}
+                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                    placeholder="Confirm new password"
+                                                    className="bg-background border-input focus:border-primary/50 text-foreground"
+                                                />
+                                            </div>
+                                        )}
+                                        <Button type="submit" className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground">
+                                            Save Changes
+                                        </Button>
+                                    </form>
+                                )}
                             </CardContent>
                         </Card>
                     </motion.div>
@@ -328,21 +270,33 @@ export default function SettingsPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
                     >
-                        <Card className="bg-onyx/60 border-white/10 backdrop-blur-sm">
+                        <Card className="bg-card border-border backdrop-blur-sm">
                             <CardHeader>
-                                <CardTitle className="text-amber-500 flex items-center gap-2">
+                                <CardTitle className="text-primary flex items-center gap-2">
                                     <FileText size={20} />
                                     My Resources
                                 </CardTitle>
                                 <CardDescription>Manage your uploaded resources</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {resources.length === 0 ? (
-                                    <div className="text-center py-12 text-gray-500">
+                                {loading ? (
+                                    <div className="space-y-4">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border border-border relative overflow-hidden">
+                                                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+                                                <div className="flex-1 space-y-2 relative z-10">
+                                                    <div className="h-4 bg-muted/20 rounded w-3/4 animate-pulse" />
+                                                    <div className="h-3 bg-muted/20 rounded w-1/2 animate-pulse" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : resources.length === 0 ? (
+                                    <div className="text-center py-12 text-muted-foreground">
                                         <p>You haven't uploaded any resources yet.</p>
                                         <Button
                                             variant="link"
-                                            className="text-amber-500 mt-2"
+                                            className="text-primary mt-2"
                                             onClick={() => router.push('/upload')}
                                         >
                                             Upload your first resource
@@ -357,12 +311,12 @@ export default function SettingsPage() {
                                                     initial={{ opacity: 0, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     exit={{ opacity: 0, x: -20 }}
-                                                    className="flex items-center justify-between p-4 bg-black/20 rounded-lg border border-white/5 hover:border-amber-500/30 transition-colors group"
+                                                    className="flex items-center justify-between p-4 bg-muted/20 rounded-lg border border-border hover:border-primary/30 transition-colors group"
                                                 >
                                                     <div className="flex-1 min-w-0 mr-4">
-                                                        <h3 className="font-medium text-gray-200 truncate">{resource.title}</h3>
-                                                        <p className="text-sm text-gray-500 truncate">{resource.description}</p>
-                                                        <div className="flex gap-4 mt-1 text-xs text-gray-600">
+                                                        <h3 className="font-medium text-foreground truncate">{resource.title}</h3>
+                                                        <p className="text-sm text-muted-foreground truncate">{resource.description}</p>
+                                                        <div className="flex gap-4 mt-1 text-xs text-muted-foreground/80">
                                                             <span>{new Date(resource.createdAt).toLocaleDateString()}</span>
                                                             <span>{resource.viewsCount} views</span>
                                                             <span>{resource.downloadsCount} downloads</span>
@@ -373,10 +327,10 @@ export default function SettingsPage() {
                                                         size="sm"
                                                         onClick={() => confirmDelete(resource.id)}
                                                         disabled={isDeleting === resource.id}
-                                                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        className="text-destructive hover:text-destructive/80 hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
                                                         {isDeleting === resource.id ? (
-                                                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-400 border-t-transparent" />
+                                                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-destructive border-t-transparent" />
                                                         ) : (
                                                             <Trash2 size={18} />
                                                         )}

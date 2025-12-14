@@ -78,10 +78,10 @@ export async function POST(req: Request) {
     await storeFileHashes(resource.id, fileUrl);
 
     // ========== TRIGGER AI INGESTION (BACKGROUND) ==========
-    // We don't await this to keep the response fast
-    import('@/lib/ai/processor').then(({ documentProcessor }) => {
-      documentProcessor.ingest(resource);
-    });
+    // DISABLED: Switching to On-Demand RAG (Per Session)
+    // import('@/lib/ai/processor').then(({ documentProcessor }) => {
+    //   documentProcessor.ingest(resource);
+    // });
 
     // ========== AWARD COINS ==========
     await prisma.user.update({

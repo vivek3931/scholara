@@ -64,15 +64,19 @@ async function extractWithPDF2JSON(buffer: Buffer): Promise<string> {
                 if (errorOccurred) return;
 
                 try {
+                    // Try getRawTextContent first
                     if (parser.getRawTextContent) {
                         const rawText = parser.getRawTextContent();
-                        if (rawText && rawText.trim()) {
+                        if (rawText && rawText.trim().length > 50) {
                             extractedText = rawText;
+                            resolve(extractedText);
+                            return;
                         }
                     }
 
-                    if ((!extractedText || extractedText.length < 50) && pdfData.formImage?.Pages) {
-                        const pages = pdfData.formImage.Pages;
+                    // Fallback: Manual extraction from Pages structure
+                    if (pdfData && pdfData.Pages && Array.isArray(pdfData.Pages)) {
+                        const pages = pdfData.Pages;
                         let pageText = '';
 
                         for (const page of pages) {
@@ -88,18 +92,18 @@ async function extractWithPDF2JSON(buffer: Buffer): Promise<string> {
                                     }
                                 }
                             }
+                            pageText += '\n'; // Add newline between pages
                         }
 
-                        if (pageText.trim().length > extractedText.length) {
+                        if (pageText.trim().length > 50) {
                             extractedText = pageText;
+                            resolve(extractedText);
+                            return;
                         }
                     }
 
-                    if (!extractedText || extractedText.trim().length === 0) {
-                        reject(new Error('No text content found in PDF structure'));
-                    } else {
-                        resolve(extractedText);
-                    }
+                    // If still no text, reject
+                    reject(new Error('No text content found in PDF structure'));
                 } catch (error) {
                     if (!errorOccurred) {
                         errorOccurred = true;
@@ -117,19 +121,46 @@ async function extractWithPDF2JSON(buffer: Buffer): Promise<string> {
                 }
             }
         }).catch((error) => {
-            if (!errorOccurred) {
-                reject(error);
-            }
+            reject(error);
         });
     });
 }
 
 async function extractWithPDFParse(buffer: Buffer): Promise<string> {
     try {
-        // pdf-parse is a CommonJS module, use require
-        const pdfParse = require('pdf-parse');
-        const data = await pdfParse(buffer);
+        // Dynamic import for pdf-parse
+        const pdfParseModule = await import('pdf-parse');
+
+        // Try multiple ways to access the pdf-parse function
+        let PdfParse;
+
+        // Method 1: Check for default export
+        if (typeof pdfParseModule.default === 'function') {
+            PdfParse = pdfParseModule.default;
+        }
+        // Method 2: Check if the entire module is the function (CommonJS style)
+        else if (typeof pdfParseModule === 'function') {
+            PdfParse = pdfParseModule as any;
+        }
+        // Method 3: Check for named export
+        else if (typeof (pdfParseModule as any).default?.default === 'function') {
+            PdfParse = (pdfParseModule as any).default.default;
+        }
+        // Method 4: Try accessing through __esModule
+        else if ((pdfParseModule as any).__esModule && typeof (pdfParseModule as any).default === 'function') {
+            PdfParse = (pdfParseModule as any).default;
+        }
+
+        if (typeof PdfParse !== 'function') {
+            console.log('[PDF Parse] Export type:', typeof pdfParseModule);
+            console.log('[PDF Parse] Has default:', typeof pdfParseModule.default);
+            console.log('[PDF Parse] Module keys:', Object.keys(pdfParseModule));
+            throw new Error(`pdf-parse export is not a function: ${typeof PdfParse}`);
+        }
+
+        const data = await PdfParse(buffer);
         return data.text || '';
+
     } catch (error: any) {
         throw new Error(`pdf-parse failed: ${error.message}`);
     }

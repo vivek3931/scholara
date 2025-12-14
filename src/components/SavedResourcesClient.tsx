@@ -39,13 +39,13 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
                 className="flex flex-col items-center justify-center py-20 px-4"
             >
                 <div className="text-center max-w-md">
-                    <Bookmark size={64} className="mx-auto text-gray-600 mb-6" />
-                    <h2 className="text-2xl font-bold text-gray-300 mb-3">No Saved Resources</h2>
-                    <p className="text-gray-500 mb-6">
+                    <Bookmark size={64} className="mx-auto text-muted-foreground mb-6" />
+                    <h2 className="text-2xl font-bold text-foreground mb-3">No Saved Resources</h2>
+                    <p className="text-muted-foreground mb-6">
                         You haven't saved any resources yet. Start exploring and bookmark resources you'd like to read later!
                     </p>
                     <Link href="/browse">
-                        <Button className="bg-amber-600 hover:bg-amber-700">
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                             Browse Resources
                         </Button>
                     </Link>
@@ -68,24 +68,24 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
                             duration: 0.3,
                             delay: index * 0.05,
                             layout: { duration: 0.3 }
-                        }} 
+                        }}
                     >
-                        <Card className="bg-onyx/60 border-white/10 hover:border-amber-500/30 transition-all duration-300 h-full flex flex-col group">
+                        <Card className="bg-card border-border hover:border-primary/30 transition-all duration-300 h-full flex flex-col group shadow-sm hover:shadow-md">
                             <CardContent className="p-6 flex flex-col h-full">
                                 <div className="flex-1">
                                     <Link href={`/resource/${resource.id}`}>
-                                        <h3 className="text-lg font-bold text-pearl mb-2 line-clamp-2 group-hover:text-amber-400 transition-colors">
+                                        <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
                                             {resource.title}
                                         </h3>
                                     </Link>
 
-                                    <p className="text-sm text-gray-400 mb-3 line-clamp-2">
+                                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                                         {resource.description}
                                     </p>
 
-                                    <div className="space-y-2 text-xs text-gray-500 mb-4">
+                                    <div className="space-y-2 text-xs text-muted-foreground mb-4">
                                         <div className="flex items-center gap-2">
-                                            <span className="bg-amber-500/20 text-amber-400 px-2 py-1 rounded">
+                                            <span className="bg-primary/10 text-primary px-2 py-1 rounded">
                                                 {resource.subject}
                                             </span>
                                         </div>
@@ -101,7 +101,7 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center gap-1 text-gray-600">
+                                        <div className="flex items-center gap-1 text-muted-foreground">
                                             <Calendar size={12} />
                                             <span>{new Date(resource.createdAt).toLocaleDateString()}</span>
                                         </div>
@@ -118,10 +118,10 @@ export default function SavedResourcesClient({ initialResources }: { initialReso
                                     <Button
                                         onClick={() => handleUnsave(resource.id)}
                                         disabled={removing === resource.id}
-                                        className="bg-red-900/20 hover:bg-red-900/40 border border-red-500/30 text-red-400 px-3"
+                                        className="bg-destructive/10 hover:bg-destructive/20 border border-destructive/30 text-destructive px-3"
                                     >
                                         {removing === resource.id ? (
-                                            <div className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />
+                                            <div className="w-4 h-4 border-2 border-destructive/30 border-t-destructive rounded-full animate-spin" />
                                         ) : (
                                             <BookmarkX size={16} />
                                         )}

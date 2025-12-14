@@ -20,6 +20,7 @@ export async function POST(req: Request) {
                 otp: true,
                 otpExpires: true,
                 referredBy: true,
+                isPro: true,
                 coins: true  // For bonus calc
             }
         });
@@ -101,7 +102,8 @@ export async function POST(req: Request) {
         const token = generateToken({
             userId: user.id,
             email: user.email,
-            role: user.role
+            role: user.role,
+            isPro: user.isPro
         });
 
         // Safe user response (no sensitive fields)

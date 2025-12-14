@@ -17,11 +17,11 @@ export default function LoginRequired() {
     return (
         <Modal isOpen={isOpen} onClose={handleClose} title="Access Denied">
             <div className="flex flex-col gap-4">
-                <p className="text-gray-300">You must be logged in to view this resource.</p>
+                <p className="text-muted-foreground">You must be logged in to view this resource.</p>
                 <div className="flex justify-end gap-2">
                     <Button variant="ghost" onClick={handleClose}>Cancel</Button>
                     <Button
-                        className="bg-amber-500 text-black hover:bg-amber-600"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
                         onClick={() => router.push('/login')}
                     >
                         Login

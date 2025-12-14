@@ -9,6 +9,7 @@ export interface SessionPayload {
     userId: string;
     email: string;
     role: string;
+    isPro: boolean;
     iat?: number;
     exp?: number;
 }
@@ -74,10 +75,10 @@ export async function sendOTP(email: string, otp: string): Promise<void> {
 }
 
 // New: Verify OTP (call this in your /verify route before token generation)
-export async function verifyOTP(email: string, providedOTP: string): Promise<{ userId: string; role: string } | null> {
+export async function verifyOTP(email: string, providedOTP: string): Promise<{ userId: string; role: string; isPro: boolean } | null> {
     const user = await prisma.user.findUnique({
         where: { email },
-        select: { id: true, role: true, otp: true, otpExpires: true },
+        select: { id: true, role: true, otp: true, otpExpires: true, isPro: true },
     });
 
     if (
@@ -95,7 +96,7 @@ export async function verifyOTP(email: string, providedOTP: string): Promise<{ u
         data: { otp: null, otpExpires: null },
     });
 
-    return { userId: user.id, role: user.role };
+    return { userId: user.id, role: user.role, isPro: user.isPro };
 }
 
 export async function getSession(): Promise<SessionPayload | null> {

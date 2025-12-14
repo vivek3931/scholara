@@ -23,7 +23,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
                     />
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -31,20 +31,20 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 p-4"
                     >
-                        <div className="relative overflow-hidden rounded-xl border border-amber-500/20 bg-onyx shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-white/10 p-4">
-                                <h3 className="text-lg font-semibold text-white">{title}</h3>
+                        <div className="relative overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
+                            <div className="flex items-center justify-between border-b border-border p-4">
+                                <h3 className="text-lg font-semibold text-foreground">{title}</h3>
                                 <button
                                     onClick={onClose}
-                                    className="rounded-full p-1 text-gray-400 hover:bg-white/10 hover:text-white transition-colors"
+                                    className="rounded-full p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                                 >
                                     <X size={20} />
                                 </button>
                             </div>
-                            <div className="p-4 text-gray-300">
+                            <div className="p-4 text-muted-foreground">
                                 {children}
                             </div>
-                            <div className="flex justify-end gap-2 border-t border-white/10 p-4 bg-onyx/50">
+                            <div className="flex justify-end gap-2 border-t border-border p-4 bg-muted/10">
                                 <Button variant="ghost" onClick={onClose}>
                                     Close
                                 </Button>

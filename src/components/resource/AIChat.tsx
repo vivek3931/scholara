@@ -94,7 +94,7 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setIsOpen(true)}
-                        className="absolute bottom-6 right-24 z-30 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/30 flex items-center justify-center"
+                        className="absolute bottom-6 right-24 z-30 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 flex items-center justify-center"
                     >
                         <Bot size={28} />
                     </motion.button>
@@ -109,17 +109,17 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute bottom-6 right-6 z-40 w-96 h-[500px] max-h-[80vh] bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                        className="absolute bottom-6 right-6 z-40 w-96 h-[500px] max-h-[80vh] bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 border-b border-white/10 flex items-center justify-between">
+                        <div className="p-4 bg-muted/50 border-b border-border flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Bot size={20} className="text-purple-400" />
                                 <h3 className="font-bold text-white text-sm">Ask AI</h3>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="text-gray-400 hover:text-white transition-colors"
+                                className="text-muted-foreground hover:text-foreground transition-colors"
                             >
                                 <X size={18} />
                             </button>
@@ -132,13 +132,13 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                                     key={msg.id}
                                     className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                                 >
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-zinc-700' : 'bg-purple-600'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-muted' : 'bg-primary'
                                         }`}>
-                                        {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
+                                        {msg.role === 'user' ? <User size={14} /> : <Bot size={14} className="text-primary-foreground" />}
                                     </div>
                                     <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${msg.role === 'user'
-                                            ? 'bg-zinc-700 text-white rounded-tr-none'
-                                            : 'bg-purple-900/30 border border-purple-500/20 text-gray-200 rounded-tl-none'
+                                        ? 'bg-muted text-muted-foreground rounded-tr-none'
+                                        : 'bg-primary/10 border border-primary/20 text-foreground rounded-tl-none'
                                         }`}>
                                         {msg.content}
                                     </div>
@@ -146,13 +146,13 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                             ))}
                             {loading && (
                                 <div className="flex gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0">
-                                        <Bot size={14} />
+                                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                                        <Bot size={14} className="text-primary-foreground" />
                                     </div>
-                                    <div className="bg-purple-900/30 border border-purple-500/20 rounded-2xl rounded-tl-none px-4 py-2 flex items-center gap-2">
-                                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
-                                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                                    <div className="bg-primary/10 border border-primary/20 rounded-2xl rounded-tl-none px-4 py-2 flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
+                                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
                                     </div>
                                 </div>
                             )}
@@ -160,7 +160,7 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                         </div>
 
                         {/* Input */}
-                        <div className="p-4 border-t border-white/10 bg-zinc-900/50">
+                        <div className="p-4 border-t border-border bg-muted/30">
                             <div className="relative">
                                 <input
                                     type="text"
@@ -168,13 +168,13 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                                     placeholder="Ask a question about this document..."
-                                    className="w-full bg-zinc-800 border border-zinc-700 rounded-xl pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors"
+                                    className="w-full bg-background border border-input rounded-xl pl-4 pr-12 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
                                     disabled={loading}
                                 />
                                 <button
                                     onClick={handleSend}
                                     disabled={!input.trim() || loading}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-purple-400 hover:text-purple-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:text-primary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                                 </button>
