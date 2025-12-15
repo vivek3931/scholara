@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -18,6 +16,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useResourceActions } from '@/hooks/useResourceActions';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ResourceActionsProps {
     resource: any;
@@ -26,6 +25,7 @@ interface ResourceActionsProps {
 }
 
 export default function ResourceActions({ resource, showModal, onChatToggle }: ResourceActionsProps) {
+    const { t } = useLanguage();
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
@@ -67,20 +67,20 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
                         animate={{ opacity: 1, scale: 1 }}
                         className="w-full max-w-sm bg-card border border-border rounded-xl overflow-hidden shadow-2xl p-6"
                     >
-                        <h3 className="text-lg font-bold text-foreground mb-4">Confirm Download</h3>
-                        <p className="text-muted-foreground mb-6">Download this resource for 20 coins?</p>
+                        <h3 className="text-lg font-bold text-foreground mb-4">{t('ResourceCard.confirmDownloadTitle')}</h3>
+                        <p className="text-muted-foreground mb-6">{t('ResourceCard.confirmDownloadMessage')}</p>
                         <div className="flex gap-3 justify-end">
                             <Button
                                 onClick={() => setConfirmModalOpen(false)}
                                 className="bg-muted hover:bg-muted/80 text-foreground"
                             >
-                                Cancel
+                                {t('ResourceCard.cancel')}
                             </Button>
                             <Button
                                 onClick={handleDownloadConfirm}
                                 className="bg-amber-600 hover:bg-amber-700 text-white"
                             >
-                                Confirm
+                                {t('ResourceCard.confirm')}
                             </Button>
                         </div>
                     </motion.div>
@@ -96,7 +96,7 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
                         className="w-full max-w-md bg-card border border-border rounded-xl overflow-hidden shadow-2xl"
                     >
                         <div className="p-4 border-b border-border flex justify-between items-center">
-                            <h3 className="font-bold text-foreground">Report Resource</h3>
+                            <h3 className="font-bold text-foreground">{t('ResourceCard.report')}</h3>
                             <button onClick={() => setReportModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                                 <Check size={20} className="rotate-45" />
                             </button>
@@ -107,13 +107,13 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
                                 value={reportReason}
                                 onChange={(e) => setReportReason(e.target.value)}
                                 className="w-full h-32 bg-input border border-input rounded-lg p-3 text-foreground text-sm focus:outline-none focus:border-primary resize-none placeholder:text-muted-foreground"
-                                placeholder="Reason for reporting..."
+                                placeholder={t('ResourceCard.reportReasonPlaceholder')}
                             />
                         </div>
                         <div className="p-4 border-t border-border bg-muted/20 flex justify-end gap-2">
-                            <Button variant="ghost" onClick={() => setReportModalOpen(false)}>Cancel</Button>
+                            <Button variant="ghost" onClick={() => setReportModalOpen(false)}>{t('ResourceCard.cancel')}</Button>
                             <Button onClick={handleReportSubmit} disabled={!reportReason.trim() || submittingReport} className="bg-red-500 hover:bg-red-600 text-white">
-                                {submittingReport ? 'Submitting...' : 'Submit Report'}
+                                {submittingReport ? t('ResourceCard.submitReport') + '...' : t('ResourceCard.submitReport')}
                             </Button>
                         </div>
                     </motion.div>
@@ -127,13 +127,13 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
                         <h1 className="text-xl font-bold text-foreground leading-tight mb-2">{resource.title}</h1>
                         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1 bg-muted px-2 py-1 rounded-md">
-                                <User size={12} /> {resource.author?.username || 'Unknown'}
+                                <User size={12} /> {resource.author?.username || t('ResourceCard.unknown')}
                             </span>
                             <span className="flex items-center gap-1 bg-muted px-2 py-1 rounded-md">
                                 <Calendar size={12} /> {new Date(resource.createdAt).toLocaleDateString('en-GB')}
                             </span>
                             <span className="flex items-center gap-1 bg-muted px-2 py-1 rounded-md">
-                                <FileText size={12} /> {resource.pageCount || '?'} Pages
+                                <FileText size={12} /> {resource.pageCount || '?'} {t('ResourceCard.pages')}
                             </span>
                         </div>
                     </div>
@@ -173,11 +173,11 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
             <div className="grid grid-cols-2 gap-3">
                 <Button onClick={handleDownloadClick} disabled={downloading} className="bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-xl font-bold">
                     <Download size={18} className="mr-2" />
-                    {downloading ? 'Downloading...' : 'Download'}
+                    {downloading ? t('ResourceCard.downloading') : t('ResourceCard.download')}
                 </Button>
                 <Button onClick={handleSave} variant="outline" className={`h-12 rounded-xl border-border hover:bg-muted ${saved ? 'text-primary border-primary/30' : 'text-foreground'}`}>
                     <Bookmark size={18} className={`mr-2 ${saved ? 'fill-current' : ''}`} />
-                    {saved ? 'Saved' : 'Save'}
+                    {saved ? t('ResourceCard.saved') : t('ResourceCard.save')}
                 </Button>
             </div>
 
@@ -197,7 +197,7 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
                 <div className="relative z-10 flex w-full items-center justify-center gap-3 rounded-full bg-background/90 px-6 py-4 text-sm font-medium text-foreground backdrop-blur-3xl transition-all duration-300 group-hover:bg-background/50">
                     <Sparkles className="w-4 h-4 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                     <span className="text-primary transition-all duration-300 group-hover:text-primary/80">
-                        Ask AI about this document
+                        {t('ResourceCard.askAI')}
                     </span>
                 </div>
             </motion.div>
@@ -205,7 +205,7 @@ export default function ResourceActions({ resource, showModal, onChatToggle }: R
             {/* Secondary Actions */}
             <div className="flex justify-center pt-2">
                 <Button variant="ghost" size="sm" onClick={handleShare} className="text-muted-foreground hover:text-foreground gap-2">
-                    <Share2 size={14} /> Share Resource
+                    <Share2 size={14} /> {t('ResourceCard.share')}
                 </Button>
             </div>
         </div>

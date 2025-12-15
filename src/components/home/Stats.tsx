@@ -5,6 +5,8 @@ import { motion, useInView, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import SkeletonStats from '@/components/ui/SkeletonStats';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 function Counter({ value, suffix = "" }: { value: number, suffix?: string }) {
     const ref = useRef(null);
     const inView = useInView(ref, { once: true, margin: "-100px" });
@@ -27,6 +29,7 @@ async function fetchStats() {
 }
 
 export default function StatsSection() {
+    const { t } = useLanguage();
     const { data, isLoading } = useQuery({
         queryKey: ['stats'],
         queryFn: fetchStats,
@@ -51,21 +54,21 @@ export default function StatsSection() {
                             <h3 className="text-5xl md:text-6xl font-bold text-primary drop-shadow-sm">
                                 <Counter value={resourceCount} suffix="+" />
                             </h3>
-                            <p className="text-muted-foreground font-medium tracking-wide uppercase text-sm">Resources Uploaded</p>
+                            <p className="text-muted-foreground font-medium tracking-wide uppercase text-sm">{t('Stats.resourcesUploaded')}</p>
                         </div>
 
                         <div className="space-y-2">
                             <h3 className="text-5xl md:text-6xl font-bold text-primary drop-shadow-sm">
                                 <Counter value={studentCount} suffix="+" />
                             </h3>
-                            <p className="text-muted-foreground font-medium tracking-wide uppercase text-sm">Active Students</p>
+                            <p className="text-muted-foreground font-medium tracking-wide uppercase text-sm">{t('Stats.activeStudents')}</p>
                         </div>
 
                         <div className="space-y-2">
                             <h3 className="text-5xl md:text-6xl font-bold text-primary drop-shadow-sm">
                                 <Counter value={downloadCount} suffix="+" />
                             </h3>
-                            <p className="text-muted-foreground font-medium tracking-wide uppercase text-sm">Total Downloads</p>
+                            <p className="text-muted-foreground font-medium tracking-wide uppercase text-sm">{t('Stats.totalDownloads')}</p>
                         </div>
                     </div>
                 )}

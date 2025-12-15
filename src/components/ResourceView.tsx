@@ -11,6 +11,7 @@ import CommentsSection from './resource/CommentsSection';
 import MobileResourceActions from './resource/MobileResourceActions';
 import { Button } from '@/components/ui/Button'; // Added
 import { X, Sparkles } from 'lucide-react'; // Added
+import { useLanguage } from '@/context/LanguageContext';
 
 const EmbeddedChatbot = dynamic(() => import('./chatbot/EmbeddedChatbot'), {
     loading: () => <div className="h-full w-full bg-muted/10 animate-pulse rounded-xl" />
@@ -18,6 +19,7 @@ const EmbeddedChatbot = dynamic(() => import('./chatbot/EmbeddedChatbot'), {
 const ProUpgradeModal = dynamic(() => import('./subscription/ProUpgradeModal'));
 
 export default function ResourceView({ resource }: { resource: any }) {
+    const { t } = useLanguage();
     const [fullscreen, setFullscreen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
@@ -41,7 +43,7 @@ export default function ResourceView({ resource }: { resource: any }) {
 
     const handleChatToggle = () => {
         if (!user) {
-            showModal("Please wait while we verify your session...");
+            showModal(t('ResourceView.verifySession'));
             return;
         }
 

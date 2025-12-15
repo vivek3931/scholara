@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import {
@@ -16,7 +14,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useResourceActions } from '@/hooks/useResourceActions';
-import { Drawer } from 'vaul'; // Assuming vaul is installed or we implement a custom one. Let's use custom motion for now if vaul isn't there.
+import { useLanguage } from '@/context/LanguageContext';
 
 // Using custom Framer Motion Drawer for dependency safety
 const SwipeableDrawer = ({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) => {
@@ -61,6 +59,7 @@ interface MobileResourceActionsProps {
 }
 
 export default function MobileResourceActions({ resource, showModal, onChatToggle, onCommentsClick }: MobileResourceActionsProps) {
+    const { t } = useLanguage();
     const [user, setUser] = useState<any>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -115,7 +114,7 @@ export default function MobileResourceActions({ resource, showModal, onChatToggl
                         ) : (
                             <>
                                 <Download size={16} className="mr-2" />
-                                Download
+                                {t('ResourceCard.download')}
                             </>
                         )}
                     </Button>
@@ -132,14 +131,14 @@ export default function MobileResourceActions({ resource, showModal, onChatToggl
                         <div className={`p-3 rounded-full ${saved ? 'bg-primary/10 text-primary' : 'bg-muted text-foreground'}`}>
                             <Bookmark size={24} className={saved ? 'fill-current' : ''} />
                         </div>
-                        <span className="text-xs font-medium">{saved ? 'Saved' : 'Save'}</span>
+                        <span className="text-xs font-medium">{saved ? t('ResourceCard.saved') : t('ResourceCard.save')}</span>
                     </button>
 
                     <button onClick={onChatToggle} className="flex flex-col items-center gap-2 p-2 rounded-xl active:bg-muted/50 transition-colors">
                         <div className="p-3 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
                             <Sparkles size={24} />
                         </div>
-                        <span className="text-xs font-medium">Ask AI</span>
+                        <span className="text-xs font-medium">{t('ResourceCard.askAI')}</span>
                     </button>
 
                     <button onClick={() => { onCommentsClick(); setDrawerOpen(false); }} className="flex flex-col items-center gap-2 p-2 rounded-xl active:bg-muted/50 transition-colors">
@@ -153,16 +152,16 @@ export default function MobileResourceActions({ resource, showModal, onChatToggl
                         <div className="p-3 rounded-full bg-muted text-foreground">
                             <Share2 size={24} />
                         </div>
-                        <span className="text-xs font-medium">Share</span>
+                        <span className="text-xs font-medium">{t('ResourceCard.share')}</span>
                     </button>
                 </div>
 
                 <div className="space-y-2">
                     <Button variant="outline" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20" onClick={() => setReportModalOpen(true)}>
-                        <Flag size={16} className="mr-3" /> Report Issue
+                        <Flag size={16} className="mr-3" /> {t('ResourceCard.report')}
                     </Button>
                     <Button variant="ghost" className="w-full" onClick={() => setDrawerOpen(false)}>
-                        Cancel
+                        {t('ResourceCard.cancel')}
                     </Button>
                 </div>
             </SwipeableDrawer>
@@ -176,24 +175,25 @@ export default function MobileResourceActions({ resource, showModal, onChatToggl
                         className="w-full max-w-md bg-card border border-border rounded-xl overflow-hidden shadow-2xl"
                     >
                         <div className="p-4 border-b border-border flex justify-between items-center">
-                            <h3 className="font-bold text-foreground">Report Resource</h3>
+                            <h3 className="font-bold text-foreground">{t('ResourceCard.report')}</h3>
                             <button onClick={() => setReportModalOpen(false)} className="text-muted-foreground hover:text-foreground">
                                 <X size={20} />
                             </button>
                         </div>
                         {/* Body same as ResourceActions */}
                         <div className="p-4 space-y-4">
+                            <p className="text-sm text-muted-foreground">Please describe why you are reporting this resource.</p>
                             <textarea
                                 value={reportReason}
                                 onChange={(e) => setReportReason(e.target.value)}
                                 className="w-full h-32 bg-input border border-input rounded-lg p-3 text-foreground text-sm focus:outline-none focus:border-primary resize-none placeholder:text-muted-foreground"
-                                placeholder="Reason for reporting..."
+                                placeholder={t('ResourceCard.reportReasonPlaceholder')}
                             />
                         </div>
                         <div className="p-4 border-t border-border bg-muted/20 flex justify-end gap-2">
-                            <Button variant="ghost" onClick={() => setReportModalOpen(false)}>Cancel</Button>
+                            <Button variant="ghost" onClick={() => setReportModalOpen(false)}>{t('ResourceCard.cancel')}</Button>
                             <Button onClick={handleReportSubmit} disabled={!reportReason.trim() || submittingReport} className="bg-red-500 hover:bg-red-600 text-white">
-                                {submittingReport ? 'Submitting...' : 'Submit Report'}
+                                {submittingReport ? t('ResourceCard.submitReport') + '...' : t('ResourceCard.submitReport')}
                             </Button>
                         </div>
                     </motion.div>

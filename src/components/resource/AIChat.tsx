@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, X, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Message {
     id: string;
@@ -13,15 +14,22 @@ interface Message {
 }
 
 export default function AIChat({ resourceId }: { resourceId: string }) {
+    const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            role: 'ai',
-            content: 'Hello! I can help you understand this document. Ask me anything!',
-            timestamp: new Date()
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    // Initialize default message
+    useEffect(() => {
+        if (!messages.length) {
+            setMessages([{
+                id: '1',
+                role: 'ai',
+                content: t('AIChat.welcome'),
+                timestamp: new Date()
+            }]);
         }
-    ]);
+    }, [t, messages.length]);
+
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -73,7 +81,7 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
             const errorMsg: Message = {
                 id: (Date.now() + 1).toString(),
                 role: 'ai',
-                content: 'Sorry, I encountered an error while processing your request.',
+                content: t('AIChat.error'),
                 timestamp: new Date()
             };
             setMessages(prev => [...prev, errorMsg]);
@@ -115,7 +123,7 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                         <div className="p-4 bg-muted/50 border-b border-border flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Bot size={20} className="text-purple-400" />
-                                <h3 className="font-bold text-white text-sm">Ask AI</h3>
+                                <h3 className="font-bold text-white text-sm">{t('AIChat.title')}</h3>
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
@@ -167,7 +175,7 @@ export default function AIChat({ resourceId }: { resourceId: string }) {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder="Ask a question about this document..."
+                                    placeholder={t('AIChat.placeholder')}
                                     className="w-full bg-background border border-input rounded-xl pl-4 pr-12 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
                                     disabled={loading}
                                 />

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { chatbotOrchestrator } from '@/lib/chatbot/orchestrator';
+import { fetchWikipediaSummary } from '@/lib/chatbot/wikipedia-service';
 
 export async function POST(req: Request) {
     try {
@@ -14,8 +15,11 @@ export async function POST(req: Request) {
         // Use session ID or generate one
         const session = sessionId || `session-${Date.now()}`;
 
-        // Process question using the new pure intelligent retrieval orchestrator
-        const response = await chatbotOrchestrator.processQuestion(message, session, resourceUrl);
+        // Process question and fetch Wikipedia summary in parallel for speed
+        const [response, wikiResult] = await Promise.all([
+            chatbotOrchestrator.processQuestion(message, session, resourceUrl),
+            fetchWikipediaSummary(message)
+        ]);
 
         // Return response in expected format
         return NextResponse.json({
@@ -25,7 +29,9 @@ export async function POST(req: Request) {
             confidence: response.confidence || 0,
             generationMethod: response.generationMethod || 'retrieval',
             retrievalStats: response.retrievalStats || null,
-            relatedQuestions: response.relatedQuestions || []
+            relatedQuestions: response.relatedQuestions || [],
+            relatedUrl: response.relatedUrl, // Included for frontend usage
+            webResult: wikiResult // Wikipedia summary
         });
 
     } catch (error: any) {

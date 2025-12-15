@@ -3,10 +3,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, CloudUpload, Search } from 'lucide-react';
+import { ArrowRight, Search, FileText, Sparkles, Wand2, CloudUpload } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
+import ParticleText from '@/components/ui/ParticleText';
 
 export default function Hero() {
+    const { t } = useLanguage();
+    // const c = useTranslations('Common'); // Use t() for everything now (since t handles nested keys in my implementation context)
     const heroRef = useRef<HTMLDivElement>(null);
     const glowRef = useRef<HTMLDivElement>(null);
     const raysRef = useRef<HTMLDivElement>(null);
@@ -371,17 +375,25 @@ export default function Hero() {
                     </span>
                 </motion.div>
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
-                    className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-foreground"
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1 }}
+                    className="mb-8"
                 >
-                    Unlock Your{' '}
-                    <span className="text-primary">
-                        Academic Potential
-                    </span>
-                </motion.h1>
+                    <ParticleText />
+
+                    {/* Vibrating Subtitle */}
+                    <motion.p
+                        className="text-sm font-semibold text-amber-500/80 mt-2 flex items-center justify-center gap-2"
+                        animate={{ x: [0, -1, 1, -1, 0] }}
+                        transition={{ duration: 0.3, repeat: Infinity, repeatDelay: 3 }}
+                    >
+                        <Sparkles size={12} />
+                        Powered by Scholara Intelligence
+                        <Sparkles size={12} />
+                    </motion.p>
+                </motion.div>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
@@ -389,8 +401,7 @@ export default function Hero() {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="text-base sm:text-lg lg:text-xl mb-8 max-w-2xl mx-auto text-muted-foreground"
                 >
-                    Seamlessly discover, contribute, and organize a wealth of study materials – from
-                    notes to past papers, all in one place, absolutely free!
+                    {t('Hero.subtitle')}
                 </motion.p>
 
                 <motion.div
@@ -400,13 +411,13 @@ export default function Hero() {
                     className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg sm:max-w-none mx-auto"
                 >
                     <Link href="/upload">
-                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-bold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-primary text-primary-foreground hover:bg-primary/90 text-sm sm:text-base shadow-lg hover:shadow-xl">
+                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-6 font-bold rounded-full transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-primary text-primary-foreground hover:bg-primary/90 text-sm sm:text-base shadow-lg hover:shadow-xl">
                             <CloudUpload className="w-5 h-5" />
                             <span>Upload Resources</span>
                         </Button>
                     </Link>
                     <Link href="/browse">
-                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-primary-foreground text-sm sm:text-base">
+                        <Button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-6 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-primary-foreground text-sm sm:text-base">
                             <Search className="w-5 h-5" />
                             <span>Explore Materials</span>
                         </Button>

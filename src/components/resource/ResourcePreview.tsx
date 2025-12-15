@@ -19,6 +19,7 @@ import {
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { updateResourcePageCount } from '@/actions/resource';
 import Image from 'next/image';
+import { useLanguage } from '@/context/LanguageContext';
 
 // --- Types ---
 interface Resource {
@@ -35,8 +36,6 @@ interface ResourcePreviewProps {
     setFullscreen: (v: boolean) => void;
     showModal: (msg: string) => void;
 }
-
-
 
 // --- Helper: Generate Cloudinary Image URL ---
 const getPageImageUrl = (fileUrl: string, pageNumber: number) => {
@@ -146,6 +145,7 @@ const LazyPageImage = ({ src, pageNumber, width, isSelected, onSelect, selection
 };
 
 export default function ResourcePreview({ resource, fullscreen, setFullscreen, showModal }: ResourcePreviewProps) {
+    const { t } = useLanguage();
     const [pageCount, setPageCount] = useState<number>(resource.pageCount || 0);
     const [isCounting, setIsCounting] = useState(false);
     const [zoom, setZoom] = useState(100);
@@ -198,7 +198,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
 
     const handleSummarize = useCallback(async () => {
         if (selectedPages.length === 0) {
-            showModal("Please select at least one page.");
+            showModal(t('ResourceViewer.selectPageWarning'));
             return;
         }
         setLoadingAi(true);
@@ -217,11 +217,11 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                 setSelectionMode(false);
                 setSelectedPages([]);
             } else {
-                showModal(data.error || 'Summarization failed');
+                showModal(data.error || t('ResourceViewer.summaryFailed'));
                 setShowArtifact(false);
             }
         } catch (e) {
-            showModal('Error generating summary');
+            showModal(t('ResourceViewer.summaryError'));
             setShowArtifact(false);
         } finally {
             setLoadingAi(false);
@@ -265,7 +265,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                             <Button variant="ghost" size="sm" onClick={zoomIn} className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"><ZoomIn size={14} /></Button>
                         </div>
                         <div className="h-4 w-px bg-border hidden sm:block" />
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">{pageCount} Pages</span>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{pageCount} {t('ResourceViewer.pages')}</span>
                     </div>
 
                     <div className="flex items-center gap-2 ml-auto sm:ml-0">
@@ -276,7 +276,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                             className={`h-8 text-xs gap-2 ${selectionMode ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
                         >
                             <Layers size={14} />
-                            <span className="hidden sm:inline">{selectionMode ? 'Done' : 'Select'}</span>
+                            <span className="hidden sm:inline">{selectionMode ? t('ResourceViewer.done') : t('ResourceViewer.select')}</span>
                         </Button>
 
                         {selectionMode && selectedPages.length > 0 && (
@@ -286,7 +286,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                                     onClick={handleSummarize}
                                     className="h-8 text-xs gap-2 bg-gradient-to-r from-primary to-accent-foreground hover:from-primary/90 hover:to-accent-foreground/90 text-primary-foreground border-0"
                                 >
-                                    <Sparkles size={14} /> <span className="hidden sm:inline">Summarize</span> ({selectedPages.length})
+                                    <Sparkles size={14} /> <span className="hidden sm:inline">{t('ResourceViewer.summarize')}</span> ({selectedPages.length})
                                 </Button>
                             </motion.div>
                         )}
@@ -323,7 +323,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                             ) : (
                                 <div className="flex flex-col items-center gap-4 py-20">
                                     <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                                    <p className="text-muted-foreground text-xs animate-pulse">Loading Document...</p>
+                                    <p className="text-muted-foreground text-xs animate-pulse">{t('ResourceViewer.loading')}</p>
                                 </div>
                             )}
                         </div>
@@ -343,7 +343,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                                 {loadingAi ? (
                                     <div className="flex flex-col items-center gap-4">
                                         <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                                        <p className="text-primary font-medium">Analyzing Content...</p>
+                                        <p className="text-primary font-medium">{t('ResourceViewer.analyzing')}</p>
                                     </div>
                                 ) : (
                                     <motion.div
@@ -354,7 +354,7 @@ export default function ResourcePreview({ resource, fullscreen, setFullscreen, s
                                         className="w-full max-w-2xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden max-h-[80%] flex flex-col"
                                     >
                                         <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
-                                            <h3 className="text-primary font-bold flex items-center gap-2"><Sparkles size={16} /> AI Summary</h3>
+                                            <h3 className="text-primary font-bold flex items-center gap-2"><Sparkles size={16} /> {t('ResourceViewer.aiSummary')}</h3>
                                             <Button variant="ghost" size="sm" onClick={() => setShowArtifact(false)}><X size={16} /></Button>
                                         </div>
                                         <div className="p-6 overflow-y-auto text-card-foreground text-sm leading-relaxed whitespace-pre-wrap">

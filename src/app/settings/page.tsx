@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Trash2, User, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Resource {
     id: string;
@@ -19,6 +20,7 @@ interface Resource {
 }
 
 export default function SettingsPage() {
+    const { t } = useLanguage();
     const [user, setUser] = useState<any>(null);
     const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState(true);
@@ -137,11 +139,11 @@ export default function SettingsPage() {
             <Modal
                 isOpen={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
-                title="Delete Resource"
+                title={t('Settings.deleteModalTitle')}
             >
                 <div className="space-y-4">
                     <p className="text-muted-foreground">
-                        Are you sure you want to delete this resource? This action cannot be undone.
+                        {t('Settings.deleteModalDesc')}
                     </p>
                     <div className="flex justify-end gap-3 pt-2">
                         <Button
@@ -149,13 +151,13 @@ export default function SettingsPage() {
                             onClick={() => setDeleteModalOpen(false)}
                             className="text-muted-foreground hover:text-foreground"
                         >
-                            Cancel
+                            {t('Settings.cancel')}
                         </Button>
                         <Button
                             onClick={handleDeleteResource}
                             className="bg-destructive hover:bg-destructive/90 text-destructive-foreground border-none"
                         >
-                            Delete
+                            {t('Settings.delete')}
                         </Button>
                     </div>
                 </div>
@@ -167,8 +169,8 @@ export default function SettingsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
-                    <p className="text-muted-foreground">Manage your profile and resources</p>
+                    <h1 className="text-3xl font-bold text-foreground mb-2">{t('Settings.title')}</h1>
+                    <p className="text-muted-foreground">{t('Settings.subtitle')}</p>
                 </motion.div>
 
                 {message && (
@@ -196,9 +198,9 @@ export default function SettingsPage() {
                             <CardHeader>
                                 <CardTitle className="text-primary flex items-center gap-2">
                                     <User size={20} />
-                                    Profile
+                                    {t('Settings.profile')}
                                 </CardTitle>
-                                <CardDescription>Update your account information</CardDescription>
+                                <CardDescription>{t('Settings.profileDesc')}</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {loading ? (
@@ -220,11 +222,11 @@ export default function SettingsPage() {
                                 ) : (
                                     <form onSubmit={handleUpdateProfile} className="space-y-4">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-foreground">Email</label>
+                                            <label className="text-sm font-medium text-foreground">{t('Settings.email')}</label>
                                             <Input value={user?.email} disabled className="bg-muted text-muted-foreground border-border" />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-foreground">Username</label>
+                                            <label className="text-sm font-medium text-foreground">{t('Settings.username')}</label>
                                             <Input
                                                 value={username}
                                                 onChange={(e) => setUsername(e.target.value)}
@@ -233,7 +235,7 @@ export default function SettingsPage() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-medium text-foreground">New Password</label>
+                                            <label className="text-sm font-medium text-foreground">{t('Settings.newPassword')}</label>
                                             <Input
                                                 type="password"
                                                 value={password}
@@ -244,7 +246,7 @@ export default function SettingsPage() {
                                         </div>
                                         {password && (
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-foreground">Confirm Password</label>
+                                                <label className="text-sm font-medium text-foreground">{t('Settings.confirmPassword')}</label>
                                                 <Input
                                                     type="password"
                                                     value={confirmPassword}
@@ -255,7 +257,7 @@ export default function SettingsPage() {
                                             </div>
                                         )}
                                         <Button type="submit" className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground">
-                                            Save Changes
+                                            {t('Settings.saveChanges')}
                                         </Button>
                                     </form>
                                 )}
@@ -274,9 +276,9 @@ export default function SettingsPage() {
                             <CardHeader>
                                 <CardTitle className="text-primary flex items-center gap-2">
                                     <FileText size={20} />
-                                    My Resources
+                                    {t('Settings.myResources')}
                                 </CardTitle>
-                                <CardDescription>Manage your uploaded resources</CardDescription>
+                                <CardDescription>{t('Settings.myResourcesDesc')}</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {loading ? (
@@ -293,13 +295,13 @@ export default function SettingsPage() {
                                     </div>
                                 ) : resources.length === 0 ? (
                                     <div className="text-center py-12 text-muted-foreground">
-                                        <p>You haven't uploaded any resources yet.</p>
+                                        <p>{t('Settings.noResources')}</p>
                                         <Button
                                             variant="link"
                                             className="text-primary mt-2"
                                             onClick={() => router.push('/upload')}
                                         >
-                                            Upload your first resource
+                                            {t('Settings.uploadFirst')}
                                         </Button>
                                     </div>
                                 ) : (

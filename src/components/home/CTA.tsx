@@ -5,7 +5,10 @@ import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
+import { useLanguage } from '@/context/LanguageContext';
+
 export default function CTA() {
+    const { t } = useLanguage();
     return (
         <section className="py-24 px-4 relative overflow-hidden">
             <div className="container mx-auto max-w-5xl relative">
@@ -22,21 +25,21 @@ export default function CTA() {
 
                     <div className="relative z-10 space-y-8">
                         <h2 className="text-4xl md:text-5xl font-bold font-poppins text-foreground">
-                            Ready to Excel in Your Studies?
+                            {t('CTA.title')}
                         </h2>
                         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Join thousands of students who are already sharing resources and achieving better grades with Scholara.
+                            {t('CTA.subtitle')}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                             <Link href="/login">
                                 <Button className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8 py-6 text-lg rounded-xl shadow-lg transition-all duration-300">
-                                    Get Started Now
+                                    {t('CTA.getStarted')}
                                 </Button>
                             </Link>
                             <Link href="/browse">
                                 <Button variant="outline" className="w-full sm:w-auto border-border text-foreground hover:bg-accent px-8 py-6 text-lg rounded-xl">
-                                    Browse Resources
+                                    {t('CTA.browseResources')}
                                     <ArrowRight className="ml-2 w-5 h-5" />
                                 </Button>
                             </Link>

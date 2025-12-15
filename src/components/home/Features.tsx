@@ -3,74 +3,77 @@
 import { motion } from 'framer-motion';
 import { Upload, Search, Award, Zap, Shield, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
-
-const features = [
-    {
-        icon: Upload,
-        title: "Easy Sharing",
-        description: "Upload your study materials in seconds. Support for PDF, images, and more.",
-        color: "text-blue-400",
-        bg: "bg-blue-500/10",
-        border: "border-blue-500/20"
-    },
-    {
-        icon: Search,
-        title: "Smart Search",
-        description: "Find exactly what you need with our advanced search and filtering system.",
-        color: "text-amber-400",
-        bg: "bg-amber-500/10",
-        border: "border-amber-500/20"
-    },
-    {
-        icon: Award,
-        title: "Earn Rewards",
-        description: "Get recognized for your contributions and earn coins for premium content.",
-        color: "text-orange-400",
-        bg: "bg-orange-500/10",
-        border: "border-orange-500/20"
-    },
-    {
-        icon: Zap,
-        title: "AI Summaries",
-        description: "Get instant AI-powered summaries of long documents to save time.",
-        color: "text-purple-400",
-        bg: "bg-purple-500/10",
-        border: "border-purple-500/20"
-    },
-    {
-        icon: Shield,
-        title: "Quality Verified",
-        description: "Community-vetted resources ensure you only get the best study materials.",
-        color: "text-emerald-400",
-        bg: "bg-emerald-500/10",
-        border: "border-emerald-500/20"
-    },
-    {
-        icon: Users,
-        title: "Community Driven",
-        description: "Join a growing community of students helping students succeed.",
-        color: "text-pink-400",
-        bg: "bg-pink-500/10",
-        border: "border-pink-500/20"
-    }
-];
-
-const container = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1
-        }
-    }
-};
-
-const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-};
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Features() {
+    const { t } = useLanguage();
+
+    const features = [
+        {
+            icon: Upload,
+            title: t('Features.easySharing'),
+            description: t('Features.easySharingDesc'),
+            color: "text-blue-400",
+            bg: "bg-blue-500/10",
+            border: "border-blue-500/20"
+        },
+        {
+            icon: Search,
+            title: t('Features.smartSearch'),
+            description: t('Features.smartSearchDesc'),
+            color: "text-amber-400",
+            bg: "bg-amber-500/10",
+            border: "border-amber-500/20"
+        },
+        {
+            icon: Award,
+            title: t('Features.earnRewards'),
+            description: t('Features.earnRewardsDesc'),
+            color: "text-orange-400",
+            bg: "bg-orange-500/10",
+            border: "border-orange-500/20"
+        },
+        {
+            icon: Zap,
+            title: t('Features.aiSummaries'),
+            description: t('Features.aiSummariesDesc'),
+            color: "text-purple-400",
+            bg: "bg-purple-500/10",
+            border: "border-purple-500/20"
+        },
+        {
+            icon: Shield,
+            title: t('Features.qualityVerified'),
+            description: t('Features.qualityVerifiedDesc'),
+            color: "text-emerald-400",
+            bg: "bg-emerald-500/10",
+            border: "border-emerald-500/20"
+        },
+        {
+            icon: Users,
+            title: t('Features.communityDriven'),
+            description: t('Features.communityDrivenDesc'),
+            color: "text-pink-400",
+            bg: "bg-pink-500/10",
+            border: "border-pink-500/20"
+        }
+    ];
+
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const item = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0 }
+    };
+
     return (
         <section className="py-24 px-4 relative overflow-hidden">
             {/* Background Decor */}
@@ -85,7 +88,7 @@ export default function Features() {
                         viewport={{ once: true }}
                         className="text-3xl md:text-5xl font-bold font-poppins text-foreground"
                     >
-                        Why Choose <span className="text-primary">Scholara</span>?
+                        {t('Features.title')} <span className="text-primary">{t('Features.brand')}</span>?
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -94,7 +97,7 @@ export default function Features() {
                         transition={{ delay: 0.1 }}
                         className="text-muted-foreground text-lg"
                     >
-                        Everything you need to excel in your academic journey, all in one place.
+                        {t('Features.subtitle')}
                     </motion.p>
                 </div>
 

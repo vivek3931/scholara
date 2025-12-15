@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { motion } from 'framer-motion';
 import SkeletonComment from '@/components/ui/SkeletonComment';
+import { useLanguage } from '@/context/LanguageContext';
 
 async function fetchComments(resourceId: string) {
     const res = await fetch(`/api/comments?resourceId=${resourceId}`);
@@ -26,6 +27,7 @@ async function postComment(resourceId: string, content: string) {
 }
 
 export default function CommentsSection({ resourceId }: { resourceId: string }) {
+    const { t } = useLanguage();
     const [comment, setComment] = useState('');
     const queryClient = useQueryClient();
 
@@ -52,7 +54,7 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
         <Card className="bg-card mt-6 border-border">
             <CardHeader>
                 <CardTitle className="text-base md:text-lg">
-                    Comments {!isLoading && `(${comments.length})`}
+                    {t('Comments.title')} {!isLoading && `(${comments.length})`}
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -60,7 +62,7 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
                     <Input
                         value={comment}
                         onChange={e => setComment(e.target.value)}
-                        placeholder="Add a comment..."
+                        placeholder={t('Comments.placeholder')}
                         className="text-sm"
                         onKeyDown={e => e.key === 'Enter' && handlePostComment()}
                     />
@@ -69,7 +71,7 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
                         size="sm"
                         disabled={mutation.isPending}
                     >
-                        {mutation.isPending ? 'Posting...' : 'Post'}
+                        {mutation.isPending ? t('Comments.posting') : t('Comments.post')}
                     </Button>
                 </div>
 
@@ -85,7 +87,7 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
                             className="border-b border-border pb-3"
                         >
                             <div className="flex justify-between mb-1">
-                                <span className="font-bold text-primary text-xs md:text-sm">{c.user?.email?.split('@')[0] || 'User'}</span>
+                                <span className="font-bold text-primary text-xs md:text-sm">{c.user?.email?.split('@')[0] || t('Comments.userFallback')}</span>
                                 <span className="text-xs text-muted-foreground">{new Date(c.createdAt).toLocaleDateString()}</span>
                             </div>
                             <p className="text-xs md:text-sm text-card-foreground">{c.content}</p>
@@ -93,7 +95,7 @@ export default function CommentsSection({ resourceId }: { resourceId: string }) 
                     ))}
 
                     {!isLoading && comments.length === 0 && (
-                        <p className="text-gray-500 text-sm text-center py-4">No comments yet. Be the first!</p>
+                        <p className="text-gray-500 text-sm text-center py-4">{t('Comments.noComments')}</p>
                     )}
                 </div>
             </CardContent>

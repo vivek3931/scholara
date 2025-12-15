@@ -14,6 +14,7 @@ export interface GenerationResult {
     }>;
     snippets: string[];
     generationMethod: 'extraction' | 'synthesis' | 'structured';
+    relatedUrl?: string;
 }
 
 export class IntelligentAnswerGenerator {
@@ -24,7 +25,8 @@ export class IntelligentAnswerGenerator {
     async generateAnswer(
         question: string,
         passages: PassageScore[],
-        format: string
+        format: string,
+        availablePassages?: PassageScore[] // All retrieved passages for metadata scanning
     ): Promise<GenerationResult> {
         console.log(`[Answer Generator] Synthesizing answer in '${format}' format from ${passages.length} passages...`);
 
@@ -77,6 +79,16 @@ export class IntelligentAnswerGenerator {
         // Calculate confidence
         const confidence = this.calculateConfidence(passages, snippets.length);
 
+        // Find the best web source URL
+        let relatedUrl: string | undefined;
+
+        // Generate dynamic Google Search URL based on user input
+        // User Request: "not hardcoded dynamically generate based on the user input"
+        relatedUrl = `https://www.google.com/search?q=${encodeURIComponent(question)}`;
+
+        // Append the URL to the response
+        answer += `\n\n🔗 Official reference:\n${relatedUrl}`;
+
         // Format sources
         const sources = passages.slice(0, 5).map(p => ({
             id: p.id,
@@ -90,7 +102,8 @@ export class IntelligentAnswerGenerator {
             confidence,
             sources,
             snippets,
-            generationMethod: method
+            generationMethod: method,
+            relatedUrl
         };
 
     }
@@ -176,9 +189,6 @@ export class IntelligentAnswerGenerator {
         return '```\n' + content.snippets.join('\n\n') + '\n```';
     }
 
-    /**
-     * Generate narrative answer
-     */
     /**
      * Generate narrative answer
      */

@@ -9,8 +9,10 @@ import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
 import { Upload, FileText, BookOpen, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function UploadPage() {
+    const { t } = useLanguage();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [subject, setSubject] = useState('');
@@ -128,7 +130,7 @@ export default function UploadPage() {
             const data = await res.json();
 
             if (res.ok) {
-                showModal('🎉 Resource published successfully! +50 Coins awarded.', 'success');
+                showModal(t('Upload.success'), 'success');
 
                 // Reset form
                 setTitle('');
@@ -192,19 +194,19 @@ export default function UploadPage() {
                     <div className="mb-8 text-center">
                         <div className="flex items-center justify-center gap-2 mb-4">
                             <h1 className="text-3xl md:text-4xl font-bold text-black">
-                                Share Knowledge
+                                {t('Upload.title')}
                             </h1>
                         </div>
-                        <p className="text-muted-foreground">Upload educational resources and earn coins</p>
+                        <p className="text-muted-foreground">{t('Upload.subtitle')}</p>
                     </div>
 
                     <Card className="border-border bg-card shadow-2xl">
                         <CardHeader className="border-b border-border">
                             <CardTitle className="text-primary flex items-center gap-2">
                                 <Upload className="w-5 h-5" />
-                                Upload Resource
+                                {t('Upload.cardTitle')}
                             </CardTitle>
-                            <p className="text-xs text-muted-foreground mt-2">Fill in the details and upload your PDF</p>
+                            <p className="text-xs text-muted-foreground mt-2">{t('Upload.cardDesc')}</p>
                         </CardHeader>
 
                         <CardContent className="pt-8">
@@ -243,7 +245,7 @@ export default function UploadPage() {
                                         transition={{ delay: 0.1 }}
                                     >
                                         <label className="block text-sm font-semibold mb-2 text-foreground">
-                                            Title <span className="text-destructive">*</span>
+                                            {t('Upload.inputTitle')} <span className="text-destructive">*</span>
                                         </label>
                                         <Input
                                             value={title}
@@ -263,7 +265,7 @@ export default function UploadPage() {
                                         transition={{ delay: 0.15 }}
                                     >
                                         <label className="block text-sm font-semibold mb-2 text-foreground">
-                                            Description <span className="text-destructive">*</span>
+                                            {t('Upload.inputDesc')} <span className="text-destructive">*</span>
                                         </label>
                                         <textarea
                                             className="flex w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder:text-muted-foreground disabled:opacity-50 transition-all shadow-sm"
@@ -285,7 +287,7 @@ export default function UploadPage() {
                                         transition={{ delay: 0.2 }}
                                     >
                                         <label className="block text-sm font-semibold mb-2 text-foreground">
-                                            Subject <span className="text-destructive">*</span>
+                                            {t('Upload.inputSubject')} <span className="text-destructive">*</span>
                                         </label>
                                         <select
                                             className="flex w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 transition-all shadow-sm"
@@ -308,7 +310,7 @@ export default function UploadPage() {
                                         transition={{ delay: 0.25 }}
                                     >
                                         <label className="block text-sm font-semibold mb-2 text-foreground">
-                                            PDF File <span className="text-destructive">*</span>
+                                            {t('Upload.inputFile')} <span className="text-destructive">*</span>
                                         </label>            </motion.div>
 
                                     <CldUploadWidget
@@ -350,7 +352,7 @@ export default function UploadPage() {
                                                     ) : (
                                                         <div className="flex flex-col items-center gap-2">
                                                             <FileText className="w-8 h-8 text-primary" />
-                                                            <p className="text-foreground font-medium">Click to upload PDF</p>
+                                                            <p className="text-foreground font-medium">{t('Upload.clickToUpload')}</p>
                                                             <p className="text-xs text-muted-foreground">Max 10MB • PDF only</p>
                                                         </div>
                                                     )}
@@ -391,10 +393,10 @@ export default function UploadPage() {
                                             {loading ? (
                                                 <span className="flex items-center justify-center gap-2">
                                                     <Loader2 className="w-4 h-4 animate-spin" />
-                                                    Publishing...
+                                                    {t('Upload.publishing')}
                                                 </span>
                                             ) : (
-                                                `Publish Resource (+50 Coins)`
+                                                t('Upload.publish')
                                             )}
                                         </Button>
                                     </motion.div>

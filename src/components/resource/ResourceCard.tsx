@@ -8,6 +8,7 @@ import { Download, Eye, User, Calendar, Lock, Bookmark, BookmarkCheck } from 'lu
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ResourceCardProps {
     resource: {
@@ -36,6 +37,7 @@ const getThumbnailUrl = (url: string) => {
 };
 
 export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCardProps) {
+    const { t } = useLanguage();
     const router = useRouter();
     const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -89,11 +91,11 @@ export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCa
                 setModalMessage(data.message);
                 setModalOpen(true);
             } else {
-                setModalMessage('Failed to save resource');
+                setModalMessage(t('ResourceCard.saveFailed'));
                 setModalOpen(true);
             }
         } catch (error) {
-            setModalMessage('Failed to save resource');
+            setModalMessage(t('ResourceCard.saveFailed'));
             setModalOpen(true);
         } finally {
             setSavingLoading(false);
@@ -128,16 +130,16 @@ export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCa
 
             if (res.ok) {
                 window.open(resource.fileUrl, '_blank');
-                setModalMessage(isPro ? 'Download started!' : 'Download started! Coins deducted.');
+                setModalMessage(isPro ? t('ResourceCard.downloadStarted') : t('ResourceCard.downloadStartedCoins'));
                 setModalOpen(true);
                 window.dispatchEvent(new Event('coinsUpdated'));
             } else {
                 const data = await res.json();
-                setModalMessage(data.error || 'Download failed');
+                setModalMessage(data.error || t('ResourceCard.downloadFailed'));
                 setModalOpen(true);
             }
         } catch (error) {
-            setModalMessage('Download failed');
+            setModalMessage(t('ResourceCard.downloadFailed'));
             setModalOpen(true);
         } finally {
             setDownloading(false);
@@ -197,7 +199,7 @@ export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCa
                     <CardContent className="py-3 px-6 flex-grow">
                         <div className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors">
                             <User className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">by {resource.author.email.split('@')[0]}</span>
+                            <span className="truncate">{t('ResourceCard.by')} {resource.author.email.split('@')[0]}</span>
                         </div>
                     </CardContent>
 
@@ -233,17 +235,17 @@ export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCa
             <Modal
                 isOpen={showLoginModal}
                 onClose={() => setShowLoginModal(false)}
-                title="Login Required"
+                title={t('ResourceCard.loginRequired')}
             >
                 <div className="flex flex-col gap-4">
-                    <p>You need to be logged in to view this resource.</p>
+                    <p>{t('ResourceCard.loginMessage')}</p>
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" onClick={() => setShowLoginModal(false)}>
-                            Cancel
+                            {t('Common.cancel')}
                         </Button>
                         <Link href="/login">
                             <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                                Login Now
+                                {t('ResourceCard.loginNow')}
                             </Button>
                         </Link>
                     </div>
@@ -254,13 +256,13 @@ export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCa
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                title="Notification"
+                title={t('ResourceCard.notification')}
             >
                 <div className="flex flex-col gap-4">
                     <p>{modalMessage}</p>
                     <div className="flex justify-end gap-2">
                         <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => setModalOpen(false)}>
-                            Close
+                            {t('Common.close')}
                         </Button>
                     </div>
                 </div>
@@ -270,21 +272,21 @@ export default function ResourceCard({ resource, isLoggedIn, isPro }: ResourceCa
             <Modal
                 isOpen={confirmDownloadOpen}
                 onClose={() => setConfirmDownloadOpen(false)}
-                title="Confirm Download"
+                title={t('ResourceCard.confirmDownloadTitle')}
             >
-                <p className="text-muted-foreground mb-4">Download this resource for 20 coins?</p>
+                <p className="text-muted-foreground mb-4">{t('ResourceCard.confirmDownloadMessage')}</p>
                 <div className="flex gap-3 justify-end">
                     <Button
                         onClick={() => setConfirmDownloadOpen(false)}
                         className="bg-muted hover:bg-muted/80 text-foreground"
                     >
-                        Cancel
+                        {t('Common.cancel')}
                     </Button>
                     <Button
                         onClick={handleDownloadConfirm}
                         className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
-                        Confirm
+                        {t('Common.confirm')}
                     </Button>
                 </div>
             </Modal>

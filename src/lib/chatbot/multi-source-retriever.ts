@@ -1,5 +1,4 @@
 import { vectorStore, SearchResult } from './vector-store';
-import { searchWeb } from '../ai/web-search';
 import { RankedQuery } from './query-reranker';
 
 export interface RetrievalResult {
@@ -18,9 +17,10 @@ export class MultiSourceRetriever {
         intent: string,
         limit: number = 10
     ): Promise<RetrievalResult> {
+
         const results: SearchResult[] = [];
 
-        // 1. Retrieve from user resources using multi-query search
+        // 1️⃣ Retrieve from user resources
         console.log('[MultiSource] Retrieving from user resources...');
         const userResourceQueries = rankedQueries.map(q => ({
             query: q.query,
@@ -32,9 +32,10 @@ export class MultiSourceRetriever {
             'user-resources',
             limit * 2
         );
+
         results.push(...userResults);
 
-        // 2. Retrieve from scholara-docs collection if exists
+        // 2️⃣ Retrieve from scholara docs
         try {
             console.log('[MultiSource] Retrieving from scholara docs...');
             const docsResults = await vectorStore.multiQuerySearch(
@@ -47,23 +48,24 @@ export class MultiSourceRetriever {
             console.warn('[MultiSource] Scholara docs not available:', error);
         }
 
-        // 3. Web search fallback if not enough results or for certain intents
-        if (results.length < 3 || intent === 'current-events') {
-            console.log('[MultiSource] Performing web search fallback...');
-            const webResults = await this.performWebSearch(query);
-            results.push(...webResults);
-        }
+        // 3️⃣ Normalize metadata (CRITICAL FIX)
+        this.normalizeMetadata(results);
 
-        // 4. De-duplicate
+        // 4️⃣ Force Web Retrieval Removed (User changed requirement to dynamic Google Link)
+
+        // 4️⃣ Deduplicate (URL-safe)
         const uniqueResults = this.deduplicateResults(results);
 
-        // 5. Calculate distribution
+        // 5️⃣ Source distribution
         const distribution: Record<string, number> = {};
         uniqueResults.forEach(r => {
             distribution[r.source] = (distribution[r.source] || 0) + 1;
         });
 
-        console.log(`[MultiSource] Retrieved ${uniqueResults.length} unique results from ${Object.keys(distribution).length} sources`);
+        console.log(
+            `[MultiSource] Retrieved ${uniqueResults.length} unique results`,
+            distribution
+        );
 
         return {
             results: uniqueResults,
@@ -73,44 +75,54 @@ export class MultiSourceRetriever {
     }
 
     /**
-     * Perform web search as fallback
+     * Normalize metadata so answer-generator always sees sourceUrl
      */
-    private async performWebSearch(query: string): Promise<SearchResult[]> {
-        try {
-            const webData = await searchWeb(query);
-            if (!webData.sources || webData.sources.length === 0) return [];
+    private normalizeMetadata(results: SearchResult[]) {
+        for (const r of results) {
+            if (!r.metadata) r.metadata = {};
 
-            return [{
-                id: `web-${Date.now()}`,
-                text: webData.summary,
-                source: 'web',
-                score: 0.6, // Lower base score for web results
-                metadata: { url: webData.sources[0] }
-            }];
-        } catch (error) {
-            console.warn('[MultiSource] Web search failed:', error);
-            return [];
+            // Backward compatibility: url → sourceUrl
+            if (r.metadata.url && !r.metadata.sourceUrl) {
+                r.metadata.sourceUrl = r.metadata.url;
+            }
+
+            // Infer sourceType if URL exists
+            if (r.metadata.sourceUrl && !r.metadata.sourceType) {
+                r.metadata.sourceType = 'web';
+            }
         }
     }
 
     /**
-     * Remove duplicate results based on content similarity
+     * Deduplicate results but ALWAYS keep URL-bearing entries
      */
     private deduplicateResults(results: SearchResult[]): SearchResult[] {
-        const seen = new Set<string>();
-        const unique: SearchResult[] = [];
+        const seen = new Map<string, SearchResult>();
 
         for (const result of results) {
-            // Create a simple hash based on first 100 chars
-            const hash = result.text.substring(0, 100).toLowerCase().trim();
+            const hash = result.text
+                .substring(0, 100)
+                .toLowerCase()
+                .trim();
 
-            if (!seen.has(hash)) {
-                seen.add(hash);
-                unique.push(result);
+            const existing = seen.get(hash);
+
+            // If not seen, add directly
+            if (!existing) {
+                seen.set(hash, result);
+                continue;
+            }
+
+            // Prefer result WITH sourceUrl
+            const existingHasUrl = !!existing.metadata?.sourceUrl;
+            const currentHasUrl = !!result.metadata?.sourceUrl;
+
+            if (!existingHasUrl && currentHasUrl) {
+                seen.set(hash, result);
             }
         }
 
-        return unique;
+        return Array.from(seen.values());
     }
 }
 

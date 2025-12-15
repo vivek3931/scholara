@@ -4,8 +4,10 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Users, Upload, MessageCircle, TrendingUp, Award, Sparkles, Clock, Crown } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CommunityClient({ data }: { data: any }) {
+    const { t } = useLanguage();
     const { recentResources, recentComments, topContributors, stats } = data;
 
     // Merge and sort activities
@@ -23,10 +25,10 @@ export default function CommunityClient({ data }: { data: any }) {
     ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 15);
 
     const statCards = [
-        { icon: Users, label: 'Active Members', value: stats.totalUsers.toLocaleString(), color: 'from-purple-600 to-purple-500' },
-        { icon: Upload, label: 'Resources Shared', value: stats.totalResources.toLocaleString(), color: 'from-amber-600 to-amber-500' },
-        { icon: MessageCircle, label: 'Comments Posted', value: stats.totalComments.toLocaleString(), color: 'from-cyan-600 to-cyan-500' },
-        { icon: TrendingUp, label: 'Total Downloads', value: stats.totalDownloads.toLocaleString(), color: 'from-green-600 to-green-500' }
+        { icon: Users, label: t('Community.activeMembers'), value: stats.totalUsers.toLocaleString(), color: 'from-purple-600 to-purple-500' },
+        { icon: Upload, label: t('Community.resourcesShared'), value: stats.totalResources.toLocaleString(), color: 'from-amber-600 to-amber-500' },
+        { icon: MessageCircle, label: t('Community.commentsPosted'), value: stats.totalComments.toLocaleString(), color: 'from-cyan-600 to-cyan-500' },
+        { icon: TrendingUp, label: t('Community.totalDownloads'), value: stats.totalDownloads.toLocaleString(), color: 'from-green-600 to-green-500' }
     ];
 
     return (
@@ -39,13 +41,13 @@ export default function CommunityClient({ data }: { data: any }) {
             >
                 <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-4">
                     <Sparkles size={16} className="text-primary" />
-                    <span className="text-sm text-primary">Welcome to the Community</span>
+                    <span className="text-sm text-primary">{t('Community.welcome')}</span>
                 </div>
                 <h1 className="text-5xl font-bold text-foreground mb-4">
-                    Learn Together, Grow Together
+                    {t('Community.title')}
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    Connect with fellow learners, share knowledge, and celebrate academic excellence
+                    {t('Community.subtitle')}
                 </p>
             </motion.div>
 
@@ -88,7 +90,7 @@ export default function CommunityClient({ data }: { data: any }) {
                             <CardHeader className="border-b border-border">
                                 <CardTitle className="text-xl text-foreground flex items-center gap-2">
                                     <Clock size={20} className="text-primary" />
-                                    Recent Activity
+                                    {t('Community.recentActivity')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-6">
@@ -111,7 +113,7 @@ export default function CommunityClient({ data }: { data: any }) {
                                                             <span className="font-bold text-primary">
                                                                 {activity.data.author?.email.split('@')[0]}
                                                             </span>
-                                                            {' '}uploaded a new resource
+                                                            {' '}{t('Community.uploadedResource')}
                                                         </p>
                                                         <Link href={`/resource/${activity.data.id}`}>
                                                             <p className="text-foreground font-semibold hover:text-primary transition-colors line-clamp-1">
@@ -136,7 +138,7 @@ export default function CommunityClient({ data }: { data: any }) {
                                                             <span className="font-bold text-accent-foreground">
                                                                 {activity.data.user?.email.split('@')[0]}
                                                             </span>
-                                                            {' '}commented on
+                                                            {' '}{t('Community.commentedOn')}
                                                         </p>
                                                         <Link href={`/resource/${activity.data.resource.id}`}>
                                                             <p className="text-foreground font-semibold hover:text-accent-foreground transition-colors line-clamp-1">
@@ -171,7 +173,7 @@ export default function CommunityClient({ data }: { data: any }) {
                             <CardHeader className="border-b border-border">
                                 <CardTitle className="text-xl text-foreground flex items-center gap-2">
                                     <Award size={20} className="text-purple-500" />
-                                    Top Contributors
+                                    {t('Community.topContributors')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-6">
@@ -212,7 +214,7 @@ export default function CommunityClient({ data }: { data: any }) {
                                                     {contributor.email.split('@')[0]}
                                                 </p>
                                                 <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                    <span>{contributor._count.uploads} uploads</span>
+                                                    <span>{contributor._count.uploads} {t('Community.uploads')}</span>
                                                     <span>•</span>
                                                     <span>{contributor.coins} SC</span>
                                                 </div>

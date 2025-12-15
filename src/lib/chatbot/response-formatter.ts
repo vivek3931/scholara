@@ -5,7 +5,8 @@ export class ResponseFormatter {
         quality: any,
         sources: any[],
         conversationHistory: any[],
-        reasoning?: string
+        reasoning?: string,
+        relatedUrl?: string
     ) {
         // Format sources for display
         const formattedSources = sources.map(s => ({
@@ -57,7 +58,8 @@ export class ResponseFormatter {
             confidenceLevel,
             reasoning,
             relatedQuestions,
-            suggestUpload: confidence < 0.3, // Suggest upload if we don't know
+            relatedUrl,
+            suggestUpload: confidence < 0.3,
             feedbackEnabled: true,
             metadata: {
                 generationTime: new Date().toISOString(),

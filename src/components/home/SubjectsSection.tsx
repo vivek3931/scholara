@@ -14,7 +14,10 @@ async function fetchSubjects() {
     return data.subjects || [];
 }
 
+import { useLanguage } from '@/context/LanguageContext';
+
 export default function SubjectsSection() {
+    const { t } = useLanguage();
     const { data: subjects = [], isLoading } = useQuery({
         queryKey: ['subjects'],
         queryFn: fetchSubjects,
@@ -31,13 +34,13 @@ export default function SubjectsSection() {
                 <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
                     <div className="text-center md:text-left">
                         <h2 className="text-3xl md:text-4xl font-bold font-poppins text-foreground mb-2">
-                            Browse by <span className="text-primary">Subject</span>
+                            {t('Subjects.title')} <span className="text-primary">{t('Subjects.subject')}</span>
                         </h2>
-                        <p className="text-muted-foreground">Find resources for your specific field of study.</p>
+                        <p className="text-muted-foreground">{t('Subjects.subtitle')}</p>
                     </div>
                     <Link href="/browse">
                         <Button variant="outline" className="border-border text-muted-foreground hover:text-foreground hover:bg-accent group">
-                            View All Subjects
+                            {t('Subjects.viewAll')}
                             <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </Link>

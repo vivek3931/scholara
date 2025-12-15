@@ -6,8 +6,10 @@ import { Download as DownloadIcon, Bookmark, BookmarkCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCallback, useState, useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function ResourceInfo({ resource, showModal }: { resource: any, showModal: (msg: string) => void }) {
+    const { t } = useLanguage();
     const [downloading, setDownloading] = useState(false);
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -52,15 +54,15 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
                 showModal(data.message);
             } else {
                 const data = await res.json();
-                showModal(data.error || 'Failed to save resource');
+                showModal(data.error || t('ResourceCard.saveFailed'));
             }
         } catch (error) {
             console.error('Save error:', error);
-            showModal('Failed to save resource');
+            showModal(t('ResourceCard.saveFailed'));
         } finally {
             setSavingLoading(false);
         }
-    }, [saved, resource.id, showModal]);
+    }, [saved, resource.id, showModal, t]);
 
     const handleDownloadConfirm = useCallback(async () => {
         setConfirmModalOpen(false);
@@ -75,60 +77,60 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
 
             if (res.ok) {
                 window.open(resource.fileUrl, '_blank');
-                showModal('Download started! Coins deducted.');
+                showModal(t('ResourceCard.downloadStartedCoins'));
                 window.dispatchEvent(new Event('coinsUpdated'));
             } else {
                 const data = await res.json();
-                showModal(data.error || 'Download failed');
+                showModal(data.error || t('ResourceCard.downloadFailed'));
             }
         } catch (error) {
             console.error('Download error:', error);
-            showModal('Download failed');
+            showModal(t('ResourceCard.downloadFailed'));
         } finally {
             setDownloading(false);
         }
-    }, [resource.id, resource.fileUrl, showModal]);
+    }, [resource.id, resource.fileUrl, showModal, t]);
 
     return (
         <>
             <Modal
                 isOpen={confirmModalOpen}
                 onClose={() => setConfirmModalOpen(false)}
-                title="Confirm Download"
+                title={t('ResourceCard.confirmDownloadTitle')}
             >
-                <p className="text-gray-300 mb-4">Download this resource for 20 coins?</p>
+                <p className="text-gray-300 mb-4">{t('ResourceCard.confirmDownloadMessage')}</p>
                 <div className="flex gap-3 justify-end">
                     <Button
                         onClick={() => setConfirmModalOpen(false)}
                         className="bg-gray-600 hover:bg-gray-700"
                     >
-                        Cancel
+                        {t('Common.cancel')}
                     </Button>
                     <Button
                         onClick={handleDownloadConfirm}
                         className="bg-amber-600 hover:bg-amber-700"
                     >
-                        Confirm
+                        {t('Common.confirm')}
                     </Button>
                 </div>
             </Modal>
 
             <Card className="bg-card sticky top-4 border-border">
                 <CardHeader>
-                    <CardTitle className="text-primary text-base md:text-lg">Resource Info</CardTitle>
+                    <CardTitle className="text-primary text-base md:text-lg">{t('ResourceInfo.title')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm">
                     <div>
-                        <p className="text-muted-foreground text-xs">Subject</p>
+                        <p className="text-muted-foreground text-xs">{t('ResourceInfo.subject')}</p>
                         <p className="text-foreground font-semibold text-sm">{resource.subject}</p>
                     </div>
                     <div>
-                        <p className="text-muted-foreground text-xs">Description</p>
+                        <p className="text-muted-foreground text-xs">{t('ResourceInfo.description')}</p>
                         <p className="text-muted-foreground/90 text-xs line-clamp-2">{resource.description}</p>
                     </div>
                     <div>
-                        <p className="text-muted-foreground text-xs">Author</p>
-                        <p className="text-foreground text-sm">{resource.author?.email?.split('@')[0] || 'Unknown'}</p>
+                        <p className="text-muted-foreground text-xs">{t('ResourceInfo.author')}</p>
+                        <p className="text-foreground text-sm">{resource.author?.email?.split('@')[0] || t('ResourceCard.unknown')}</p>
                     </div>
 
                     {/* Save Button */}
@@ -151,7 +153,7 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
                             ) : (
                                 <Bookmark size={16} className="mr-2" />
                             )}
-                            {savingLoading ? 'Processing...' : saved ? 'Saved' : 'Save for Later'}
+                            {savingLoading ? t('ResourceInfo.processing') : saved ? t('ResourceInfo.saved') : t('ResourceInfo.save')}
                         </Button>
                     </motion.div>
 
@@ -166,7 +168,7 @@ export default function ResourceInfo({ resource, showModal }: { resource: any, s
                             disabled={downloading}
                         >
                             <DownloadIcon size={16} className="mr-2" />
-                            {downloading ? 'Processing...' : 'Download (20 Coins)'}
+                            {downloading ? t('ResourceInfo.processing') : t('ResourceInfo.download')}
                         </Button>
                     </motion.div>
 

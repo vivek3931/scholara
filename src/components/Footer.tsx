@@ -3,45 +3,47 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Twitter, Linkedin, Facebook, Github, Heart } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Footer() {
+    const { t } = useLanguage();
     const currentYear = new Date().getFullYear();
 
     const footerLinks = [
         {
-            title: "Product",
+            title: t('Footer.product'),
             links: [
-                { label: "Features", href: "/#features" },
-                { label: "Pricing", href: "/pricing" },
-                { label: "Resources", href: "/browse" },
-                { label: "Upload", href: "/upload" },
+                { label: t('Footer.features'), href: "/#features" },
+                { label: t('Footer.pricing'), href: "/pricing" },
+                { label: t('Footer.resources'), href: "/browse" },
+                { label: t('Footer.upload'), href: "/upload" },
             ]
         },
         {
-            title: "Resources",
+            title: t('Footer.resources'), // "Resources" is used for both title section and link label elsewhere, ensuring consistent keys or context if needed.
             links: [
-                { label: "Blog", href: "/blog" },
-                { label: "Community", href: "/community" },
-                { label: "Help Center", href: "/help" },
-                { label: "Guidelines", href: "/guidelines" },
+                { label: t('Footer.blog'), href: "/blog" },
+                { label: t('Footer.community'), href: "/community" },
+                { label: t('Footer.helpCenter'), href: "/help" },
+                { label: t('Footer.guidelines'), href: "/guidelines" },
             ]
         },
         {
-            title: "Company",
+            title: t('Footer.company'),
             links: [
-                { label: "About Us", href: "/about" },
-                { label: "Careers", href: "/careers" },
-                { label: "Contact", href: "/contact" },
-                { label: "Partners", href: "/partners" },
+                { label: t('Footer.aboutUs'), href: "/about" },
+                { label: t('Footer.careers'), href: "/careers" },
+                { label: t('Footer.contact'), href: "/contact" },
+                { label: t('Footer.partners'), href: "/partners" },
             ]
         },
         {
-            title: "Legal",
+            title: t('Footer.legal'),
             links: [
-                { label: "Privacy Policy", href: "/privacy" },
-                { label: "Terms of Service", href: "/terms" },
-                { label: "Cookie Policy", href: "/cookies" },
-                { label: "Security", href: "/security" },
+                { label: t('Footer.privacy'), href: "/privacy" },
+                { label: t('Footer.terms'), href: "/terms" },
+                { label: t('Footer.cookiePolicy'), href: "/cookies" },
+                { label: t('Footer.security'), href: "/security" },
             ]
         }
     ];
@@ -53,12 +55,11 @@ export default function Footer() {
                     <div className="col-span-2 lg:col-span-2 space-y-4">
                         <Link href="/" className="inline-block">
                             <span className="text-2xl font-bold font-poppins text-foreground">
-                                Scholara
+                                {t('Navbar.title')}
                             </span>
                         </Link>
                         <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
-                            Empowering students worldwide to share, discover, and excel.
-                            The leading platform for academic resource exchange.
+                            {t('Footer.description')}
                         </p>
                         <div className="flex items-center gap-4 pt-4">
                             <Button variant="ghost" size="icon" className="hover:text-primary hover:bg-primary/10 rounded-full h-8 w-8">
@@ -95,11 +96,11 @@ export default function Footer() {
                 </div>
 
                 <div className="border-t border-border pt-8 mt-8 flex flex-col md:flex-row items-center justify-between text-sm text-muted-foreground">
-                    <p>© {currentYear} Scholara Inc. All rights reserved.</p>
+                    <p>© {currentYear} Scholara Inc. {t('Footer.allRightsReserved')}</p>
                     <div className="flex items-center gap-2 mt-4 md:mt-0">
-                        <span>Made with</span>
+                        <span>{t('Footer.madeWith')}</span>
                         <Heart size={14} className="text-red-500 fill-red-500" />
-                        <span>for students.</span>
+                        <span>{t('Footer.forStudents')}</span>
                     </div>
                 </div>
             </div>

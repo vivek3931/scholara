@@ -84,6 +84,8 @@ class ChatbotOrchestrator {
                 );
 
                 initialResults = retrievalResult.results;
+                console.log('[Orchestrator] Initial Retrieval Sources:', initialResults.map(r => ({ s: r.source, m: r.metadata })));
+
                 retrievalStats = {
                     queriesGenerated: queryRerankResult.totalQueries,
                     documentsRetrieved: retrievalResult.totalResults,
@@ -131,10 +133,23 @@ class ChatbotOrchestrator {
                 };
             }
 
+            // Verify we have candidate passages from initial retrieval to ensure nothing was lost in reranking
+            const allCandidates = initialResults.map(r => ({
+                id: r.id,
+                text: r.text,
+                score: r.score || 0,
+                finalScore: r.score || 0,
+                vectorScore: 0,
+                crossEncoderScore: 0,
+                metadata: r.metadata || {},
+                source: r.source
+            }));
+
             const generationResult = await intelligentAnswerGenerator.generateAnswer(
                 userInput,
                 contextResult.optimizedPassages,
-                formatResult.format
+                formatResult.format,
+                allCandidates // Pass ALL initial results to guarantee we find the URL
             );
 
             // Step 10: Quality/Memory/Formatting
@@ -155,7 +170,9 @@ class ChatbotOrchestrator {
                 formatResult.format,
                 qualityResult,
                 generationResult.sources,
-                history
+                history,
+                undefined,  // reasoning parameter (leave as undefined if not used)
+                generationResult.relatedUrl  // ⭐ ADD THIS LINE
             );
 
             return {
@@ -163,7 +180,8 @@ class ChatbotOrchestrator {
                 confidence: generationResult.confidence,
                 generationMethod: generationResult.generationMethod,
                 retrievalStats,
-                usedWeb: generationResult.sources.some(s => s.source === 'web')
+                usedWeb: generationResult.sources.some(s => s.source === 'web'),
+                relatedUrl: generationResult.relatedUrl
             };
 
         } catch (error: any) {
@@ -175,7 +193,8 @@ class ChatbotOrchestrator {
                 relatedQuestions: [],
                 confidence: 0,
                 generationMethod: 'error',
-                usedWeb: false
+                usedWeb: false,
+                relatedUrl: undefined
             };
         }
     }

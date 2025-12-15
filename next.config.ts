@@ -3,7 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // 👇 VERY IMPORTANT: disable Turbopack
   experimental: {
-    turbo: false,
+    turbo: {
+      resolveAlias: {
+        canvas: './empty-module.ts',
+      },
+    }
   },
 
   // 👇 Keep heavy Node-only packages out of client bundles
